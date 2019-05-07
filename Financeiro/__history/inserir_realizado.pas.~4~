@@ -1,0 +1,26 @@
+unit inserir_realizado;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  Tf_inserir_realizado = class(TForm)
+    cbcategoria: TComboBox;
+    Label1: TLabel;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  f_inserir_realizado: Tf_inserir_realizado;
+
+implementation
+
+{$R *.dfm}
+
+end.

@@ -1,0 +1,91 @@
+unit U_Previsao_Entradas_Semanal;
+
+interface
+
+uses  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, Buttons, Menus, Mask, Grids, DBGrids, Registry,
+  DB, ADODB, Math, UDias;
+
+type
+    previsao_entradas = class(dias)
+    private
+    j, i, q : integer;
+    datac, dataf : tdate;
+    mesc, mesf, diac, diaf, dia: string;
+    public
+    previsao_entrada_semanal : array[1..16,1..8] of extended;
+    end;
+
+implementation
+
+uses previsao_fluxo, data_module;
+
+procedure previsao_entradas.calcular;
+var
+dia : string;
+begin
+
+
+
+end;
+
+procedure previsao_entradas.vendas_veiculos;
+var
+v_veic : extended;
+begin
+
+
+end;
+
+procedure previsao_entradas.vendas_cartoes;
+begin
+
+
+
+end;
+
+procedure previsao_entradas.vendas_dinheiro;
+var
+v_dinheiro : extended;
+begin
+
+
+
+end;
+
+procedure previsao_entradas.vendas_boleto;
+begin
+
+
+
+end;
+
+procedure previsao_entradas.vendas_comissao;
+begin
+
+
+end;
+
+procedure previsao_entradas.vendas_gm;
+begin
+
+
+end;
+
+procedure previsao_entradas.vendas_transferencias;
+var
+valor : extended;
+begin
+
+
+
+end;
+
+
+procedure previsao_entradas.total;
+begin
+ 
+end;
+
+end.
+

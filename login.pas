@@ -1,0 +1,188 @@
+unit login;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.jpeg,
+  Vcl.ExtCtrls, Data.DB, Data.Win.ADODB, FireDAC.VCLUI.Wait;
+
+type
+  Tf_login = class(TForm)
+    edlogin: TEdit;
+    Label1: TLabel;
+    edsenha: TEdit;
+    Label2: TLabel;
+    btok: TButton;
+    Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
+    q_acesso: TADOQuery;
+    procedure btokClick(Sender: TObject);
+    procedure edsenhaKeyPress(Sender: TObject; var Key: Char);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    login, senha, servidor, conexao1, conexao2, conexao3: string;
+
+
+    { Private declarations }
+  public
+
+  usuario : array[1..50] of integer;
+
+  var
+    schema: string;
+    { Public declarations }
+  end;
+
+var
+  f_login: Tf_login;
+
+implementation
+
+{$R *.dfm}
+
+uses data_module, principal, u_schemas;
+
+procedure Tf_login.btokClick(Sender: TObject);
+begin
+
+   if (f_principal.lbbanco.Caption <> 'frutosdias_teste' ) then
+    begin
+
+          if (edlogin.Text = 'italo') or (edlogin.Text = 'ITALO')  then
+          showmessage('Atenção. Banco Principal!');
+
+
+          dm.conexao_oracle.Close;
+          dm.conexao_oracle.Params.Clear;
+          dm.conexao_oracle.DriverName := 'Ora';
+          dm.conexao_oracle.Params.add('DataBase=(DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = 10.3.122.7)(PORT = 1521)))(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME = frutos)))');
+          dm.conexao_oracle.params.Add('User_Name='+edlogin.Text);
+          dm.conexao_oracle.params.Add('Password='+edsenha.Text);
+          dm.conexao_oracle.Open();
+
+          {
+          //Verifica schemas -----------------------
+
+
+          dm.q_schemas.Close;
+          dm.q_schemas.Open();
+
+          if dm.q_schemas.RecordCount > 1 then
+          begin
+                Application.CreateForm(Tf_schemas, f_schemas);
+                f_schemas.ShowModal;
+          end
+          else
+          begin
+                schema:=dm.q_schemasSCHEMA_NAME.AsString;
+          end;
+          }
+                dm.q_aux.Close;
+                dm.q_aux.SQL.Clear;
+                dm.q_aux.SQL.Add('alter session set current_schema = nbs' );
+                dm.q_aux.ExecSQL;
+
+
+          //----------------------------------------------
+
+                q_acesso.Close;
+                q_acesso.Parameters.ParamByName('login').Value := edlogin.Text;
+                q_acesso.Open;
+
+                q_acesso.First;
+
+                while q_acesso.eof = false do
+                begin
+
+                     usuario[q_acesso.FieldByName('IDTELA').AsInteger] := q_acesso.FieldByName('IDTELA').AsInteger;
+                     q_acesso.Next;
+
+                end;
+
+                f_login.Visible := false;
+                f_principal.Visible := true;
+                f_principal.usuario := edlogin.Text;
+                f_principal.Show();
+
+    end
+    else
+    if (edlogin.Text = 'italo') or (edlogin.Text = 'ITALO') or (edlogin.Text = 'sidneia')  or
+          (edlogin.Text = 'SIDNEIA')  then
+    begin
+
+          dm.conexao_oracle.Close;
+          dm.conexao_oracle.Params.Clear;
+          dm.conexao_oracle.DriverName := 'Ora';
+          dm.conexao_oracle.Params.add('DataBase=(DESCRIPTION =(ADDRESS_LIST =(ADDRESS = (PROTOCOL = TCP)(HOST = 10.3.122.7)(PORT = 1521)))(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME = frutos)))');
+          dm.conexao_oracle.params.Add('User_Name='+edlogin.Text);
+          dm.conexao_oracle.params.Add('Password='+edsenha.Text);
+          dm.conexao_oracle.Open();
+
+
+         //Verifica Schema -----------------------------------------------------
+
+          dm.q_schemas.Close;
+          dm.q_schemas.Open();
+
+          if dm.q_schemas.RecordCount > 1 then
+          begin
+                Application.CreateForm(Tf_schemas, f_schemas);
+                f_schemas.ShowModal;
+          end
+          else
+          begin
+                schema:=dm.q_schemasSCHEMA_NAME.AsString;
+          end;
+                dm.q_aux.Close;
+                dm.q_aux.SQL.Clear;
+                dm.q_aux.SQL.Add('alter session set current_schema = '+ schema );
+                dm.q_aux.ExecSQL;
+
+         //---------------------------------------------------------------------
+
+                q_acesso.Close;
+                q_acesso.Parameters.ParamByName('login').Value := edlogin.Text;
+                q_acesso.Open;
+
+                q_acesso.First;
+
+                while q_acesso.eof = false do
+                begin
+
+                     usuario[q_acesso.FieldByName('IDTELA').AsInteger] := q_acesso.FieldByName('IDTELA').AsInteger;
+                     q_acesso.Next;
+
+                end;
+
+
+                f_login.Visible := false;
+                f_principal.Visible := true;
+                f_principal.Show();
+
+    end
+    else
+    showmessage('Usuário não permitido usar o banco de teste.');
+
+
+
+
+
+end;
+
+procedure Tf_login.edsenhaKeyPress(Sender: TObject; var Key: Char);
+begin
+
+  if Key = #13 then
+  btokClick(Sender);
+
+end;
+
+procedure Tf_login.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+      Action := cafree;
+end;
+
+end.

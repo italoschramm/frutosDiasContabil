@@ -1,0 +1,64 @@
+unit realizado_saidas;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Grids,
+  Vcl.DBGrids, Data.Win.ADODB, Data.DB;
+
+type
+  Tf_realizado_saidas = class(TForm)
+    Panel1: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    lbsaldo: TLabel;
+    lbinicial: TLabel;
+    Label5: TLabel;
+    cbmes: TComboBox;
+    cbano: TComboBox;
+    btfiltrar: TButton;
+    DBGrid1: TDBGrid;
+    DataSource1: TDataSource;
+    tb_realizado_saidas: TADOTable;
+    tb_realizado_saidasDIA: TWideStringField;
+    tb_realizado_saidasC1: TFloatField;
+    tb_realizado_saidasC2: TFloatField;
+    tb_realizado_saidasC3: TFloatField;
+    tb_realizado_saidasC4: TFloatField;
+    tb_realizado_saidasC5: TFloatField;
+    tb_realizado_saidasC6: TFloatField;
+    tb_realizado_saidasC7: TFloatField;
+    tb_realizado_saidasC8: TFloatField;
+    tb_realizado_saidasC9: TFloatField;
+    tb_realizado_saidasC10: TFloatField;
+    q_atualizar_tela: TADOQuery;
+    q_limpa_tela: TADOQuery;
+    tb_realizado_saidasC11: TFloatField;
+    tb_realizado_saidasC12: TFloatField;
+    tb_realizado_saidasC13: TFloatField;
+    tb_realizado_saidasC14: TFloatField;
+    tb_realizado_saidasC15: TFloatField;
+    tb_realizado_saidasC16: TFloatField;
+    tb_realizado_saidasC17: TFloatField;
+    tb_realizado_saidasC18: TFloatField;
+    tb_realizado_saidasC19: TFloatField;
+    tb_realizado_saidasC20: TFloatField;
+    tb_realizado_saidasC21: TFloatField;
+    tb_realizado_saidasC22: TFloatField;
+    tb_realizado_saidasTOTAL: TFloatField;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  f_realizado_saidas: Tf_realizado_saidas;
+
+implementation
+
+{$R *.dfm}
+
+end.

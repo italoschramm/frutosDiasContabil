@@ -1,0 +1,288 @@
+object form_processos: Tform_processos
+  Left = 0
+  Top = 0
+  Caption = 'Processos'
+  ClientHeight = 632
+  ClientWidth = 764
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  Visible = True
+  OnClose = FormClose
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 764
+    Height = 81
+    Align = alTop
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 31
+      Top = 35
+      Width = 59
+      Height = 16
+      Caption = 'Processo'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object edprocesso: TEdit
+      Left = 104
+      Top = 32
+      Width = 121
+      Height = 24
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 129
+    Width = 764
+    Height = 503
+    Align = alClient
+    TabOrder = 1
+    ExplicitTop = 201
+    ExplicitHeight = 431
+    object DBGrid1: TDBGrid
+      Left = 1
+      Top = 1
+      Width = 762
+      Height = 501
+      Align = alClient
+      DataSource = DataSource1
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+      OnCellClick = DBGrid1CellClick
+      Columns = <
+        item
+          Expanded = False
+          FieldName = 'TIPO'
+          Title.Alignment = taCenter
+          Title.Caption = 'Tipo'
+          Title.Font.Charset = DEFAULT_CHARSET
+          Title.Font.Color = clWindowText
+          Title.Font.Height = -11
+          Title.Font.Name = 'Tahoma'
+          Title.Font.Style = [fsBold]
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'PROCESSO'
+          Title.Alignment = taCenter
+          Title.Caption = 'Processo'
+          Title.Font.Charset = DEFAULT_CHARSET
+          Title.Font.Color = clWindowText
+          Title.Font.Height = -11
+          Title.Font.Name = 'Tahoma'
+          Title.Font.Style = [fsBold]
+          Width = 200
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'DATA_AUDIENCIA'
+          Title.Alignment = taCenter
+          Title.Caption = 'Data Audi'#234'ncia'
+          Title.Font.Charset = DEFAULT_CHARSET
+          Title.Font.Color = clWindowText
+          Title.Font.Height = -11
+          Title.Font.Name = 'Tahoma'
+          Title.Font.Style = [fsBold]
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'HORA_AUDIENCIA'
+          Title.Alignment = taCenter
+          Title.Caption = 'Hora Audi'#234'ncia'
+          Title.Font.Charset = DEFAULT_CHARSET
+          Title.Font.Color = clWindowText
+          Title.Font.Height = -11
+          Title.Font.Name = 'Tahoma'
+          Title.Font.Style = [fsBold]
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'TIPO_AUDIENCIA'
+          Title.Alignment = taCenter
+          Title.Caption = 'Tipo Audi'#234'ncia'
+          Title.Font.Charset = DEFAULT_CHARSET
+          Title.Font.Color = clWindowText
+          Title.Font.Height = -11
+          Title.Font.Name = 'Tahoma'
+          Title.Font.Style = [fsBold]
+          Visible = True
+        end>
+    end
+  end
+  object Panel3: TPanel
+    Left = 0
+    Top = 81
+    Width = 764
+    Height = 48
+    Align = alTop
+    TabOrder = 2
+    ExplicitTop = 153
+    object bteditar: TButton
+      AlignWithMargins = True
+      Left = 275
+      Top = 4
+      Width = 89
+      Height = 40
+      Margins.Left = 30
+      Align = alLeft
+      Caption = 'Editar'
+      Enabled = False
+      TabOrder = 0
+      OnClick = bteditarClick
+      ExplicitLeft = 153
+    end
+    object btcadastrar: TButton
+      AlignWithMargins = True
+      Left = 153
+      Top = 4
+      Width = 89
+      Height = 40
+      Margins.Left = 30
+      Align = alLeft
+      Caption = 'Cadastrar'
+      TabOrder = 1
+      OnClick = btcadastrarClick
+      ExplicitLeft = 31
+    end
+    object btpesquisar: TButton
+      AlignWithMargins = True
+      Left = 31
+      Top = 4
+      Width = 89
+      Height = 40
+      Margins.Left = 30
+      Align = alLeft
+      Caption = 'Pesquisar'
+      Enabled = False
+      TabOrder = 2
+      OnClick = bteditarClick
+      ExplicitLeft = -23
+      ExplicitTop = 2
+    end
+  end
+  object q_tela: TFDQuery
+    Connection = dm.conexao_banco
+    SQL.Strings = (
+      
+        'SELECT A.IDPROCESSO, A.TIPO, A.PROCESSO, B.DATA_AUDIENCIA, B.HOR' +
+        'A_AUDIENCIA, B.TIPO_AUDIENCIA '
+      'FROM JUR_PROCESSOS A, JUR_PROCESSOS_AUDIENCIAS B'
+      'WHERE A.IDPROCESSO = B.IDPROCESSO AND A.PROCESSO LIKE :processo')
+    Left = 128
+    Top = 248
+    ParamData = <
+      item
+        Name = 'PROCESSO'
+        ParamType = ptInput
+      end>
+    object q_telaIDPROCESSO: TFDAutoIncField
+      FieldName = 'IDPROCESSO'
+      Origin = 'IDPROCESSO'
+      ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
+    end
+    object q_telaTIPO: TWideStringField
+      FieldName = 'TIPO'
+      Origin = 'TIPO'
+      Required = True
+      FixedChar = True
+    end
+    object q_telaPROCESSO: TWideStringField
+      FieldName = 'PROCESSO'
+      Origin = 'PROCESSO'
+      Required = True
+      Size = 50
+    end
+    object q_telaDATA_AUDIENCIA: TDateField
+      FieldName = 'DATA_AUDIENCIA'
+      Origin = 'DATA_AUDIENCIA'
+    end
+    object q_telaHORA_AUDIENCIA: TTimeField
+      FieldName = 'HORA_AUDIENCIA'
+      Origin = 'HORA_AUDIENCIA'
+    end
+    object q_telaTIPO_AUDIENCIA: TWideStringField
+      FieldName = 'TIPO_AUDIENCIA'
+      Origin = 'TIPO_AUDIENCIA'
+      FixedChar = True
+      Size = 30
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = q_tela
+    Left = 128
+    Top = 312
+  end
+  object q_pesquisar_processo: TFDQuery
+    Connection = dm.conexao_banco
+    SQL.Strings = (
+      
+        'SELECT A.IDPROCESSO, A.TIPO, A.PROCESSO, B.DATA_AUDIENCIA, B.HOR' +
+        'A_AUDIENCIA, B.TIPO_AUDIENCIA '
+      'FROM JUR_PROCESSOS A, JUR_PROCESSOS_AUDIENCIAS B'
+      'WHERE A.IDPROCESSO = B.IDPROCESSO')
+    Left = 128
+    Top = 384
+    object FDAutoIncField1: TFDAutoIncField
+      FieldName = 'IDPROCESSO'
+      Origin = 'IDPROCESSO'
+      ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = True
+    end
+    object WideStringField1: TWideStringField
+      FieldName = 'TIPO'
+      Origin = 'TIPO'
+      Required = True
+      FixedChar = True
+    end
+    object WideStringField2: TWideStringField
+      FieldName = 'PROCESSO'
+      Origin = 'PROCESSO'
+      Required = True
+      Size = 50
+    end
+    object DateField1: TDateField
+      FieldName = 'DATA_AUDIENCIA'
+      Origin = 'DATA_AUDIENCIA'
+    end
+    object TimeField1: TTimeField
+      FieldName = 'HORA_AUDIENCIA'
+      Origin = 'HORA_AUDIENCIA'
+    end
+    object WideStringField3: TWideStringField
+      FieldName = 'TIPO_AUDIENCIA'
+      Origin = 'TIPO_AUDIENCIA'
+      FixedChar = True
+      Size = 30
+    end
+  end
+end

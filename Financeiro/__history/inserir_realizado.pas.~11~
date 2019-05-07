@@ -1,0 +1,151 @@
+unit inserir_realizado;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, Data.DB,
+  Data.Win.ADODB;
+
+type
+  Tf_inserir_realizado = class(TForm)
+    cbcategoria: TComboBox;
+    Label1: TLabel;
+    data1: TDateTimePicker;
+    Label2: TLabel;
+    captionvalor: TLabel;
+    edvalor: TEdit;
+    Button1: TButton;
+    btpesquisar: TButton;
+    btexcluir: TButton;
+    q_inserir: TADOQuery;
+    procedure edvalorExit(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure verifica_categoria;
+  private
+  categoria : integer;
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  f_inserir_realizado: Tf_inserir_realizado;
+
+implementation
+
+{$R *.dfm}
+
+uses data_module;
+
+procedure Tf_inserir_realizado.Button1Click(Sender: TObject);
+begin
+
+      verifica_categoria;
+
+      q_inserir.Close;
+      q_inserir.Parameters.ParamByName('cod').Value := categoria;
+      q_inserir.Parameters.ParamByName('valor').Value := edvalor.Text;
+      q_inserir.Parameters.ParamByName('data').Value := data1.DateTime;
+      q_inserir.ExecSQL;
+
+      Showmessage('Cadastrado com sucesso!');
+
+      cbcategoria.Text := '';
+      data1.DateTime := now;
+      edvalor.clear;
+      edvalor.SetFocus;
+
+
+
+end;
+
+procedure Tf_inserir_realizado.edvalorExit(Sender: TObject);
+begin
+
+      edvalor.Text := CurrToStrF(StrToCurrDef(Trim(edvalor.Text),0),ffNumber,2);
+
+end;
+
+procedure Tf_inserir_realizado.verifica_categoria;
+begin
+
+      if cbcategoria.Text = '1 - CONSORCIO' then
+      categoria := 1;
+
+      if cbcategoria.Text = '2 - COMISSAO' then
+      categoria := 2;
+
+      if cbcategoria.Text = '3 - VEICULOS VN' then
+      categoria := 3;
+
+      if cbcategoria.Text = '4 - VEICULOS VD' then
+      categoria := 4;
+
+      if cbcategoria.Text = '5 - SEMINOVOS' then
+      categoria := 5;
+
+      if cbcategoria.Text = '6 - PECAS GM' then
+      categoria := 6;
+
+      if cbcategoria.Text = '7 - CARTAO DE CREDITO' then
+      categoria := 7;
+
+      if cbcategoria.Text = '8 - SAL E ENCARGOS' then
+      categoria := 8;
+
+      if cbcategoria.Text = '9 - RESCISAO' then
+      categoria := 9;
+
+      if cbcategoria.Text = '10 - ALUGUEL' then
+      categoria := 10;
+
+      if cbcategoria.Text = '11 - IMPOSTOS' then
+      categoria := 11;
+
+      if cbcategoria.Text = '12 - AGUA/LUZ/TEL' then
+      categoria := 12;
+
+      if cbcategoria.Text = '13 - EMPLACAMENTO' then
+      categoria := 13;
+
+      if cbcategoria.Text = '14 - LEASING/BNDES' then
+      categoria := 14;
+
+      if cbcategoria.Text = '15 - FORNEC. DIVERSOS' then
+      categoria := 15;
+
+      if cbcategoria.Text = '16 - SOCIOS' then
+      categoria := 16;
+
+      if cbcategoria.Text = '17 - DIVERSOS' then
+      categoria := 17;
+
+      if cbcategoria.Text = '18 - REFORMA 2014' then
+      categoria := 18;
+
+      if cbcategoria.Text = '19 - EMPRESTIMOS' then
+      categoria := 19;
+
+      if cbcategoria.Text = '20 - TRANSFERENCIA ME' then
+      categoria := 20;
+
+      if cbcategoria.Text = '21 - SEGURO' then
+      categoria := 21;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+end;
+
+end.

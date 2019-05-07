@@ -1,0 +1,359 @@
+unit fluxo_caixa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids,
+  Data.DB, Data.Win.ADODB, Vcl.StdCtrls, UPrevisao_Saidas, UPrevisao_Entradas,
+  URealizado_Entradas, URealizado_Saidas, USaldo_Diario;
+
+type
+  Tf_fluxo_caixa = class(TForm)
+    Panel1: TPanel;
+    DBGrid1: TDBGrid;
+    DataSource1: TDataSource;
+    tb_fluxo: TADOTable;
+    Label1: TLabel;
+    cbmes: TComboBox;
+    Label2: TLabel;
+    cbano: TComboBox;
+    btfiltrar: TButton;
+    q_atualizar_tela: TADOQuery;
+    q_limpa_tela: TADOQuery;
+    tb_fluxoDIA: TWideStringField;
+    tb_fluxoC1: TFloatField;
+    tb_fluxoC2: TFloatField;
+    tb_fluxoC3: TFloatField;
+    tb_fluxoC4: TFloatField;
+    tb_fluxoC5: TFloatField;
+    tb_fluxoC6: TFloatField;
+    tb_fluxoC7: TFloatField;
+    tb_fluxoC8: TFloatField;
+    tb_fluxoC9: TFloatField;
+    tb_fluxoC10: TFloatField;
+    Label3: TLabel;
+    lbsaldo: TLabel;
+    lbinicial: TLabel;
+    Label5: TLabel;
+    procedure btfiltrarClick(Sender: TObject);
+    procedure atualiza_tela;
+    procedure limpa_tela;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Data;
+    procedure calcular;
+  private
+    ObjPrevisao_Saidas: previsao;
+    ObjPrevisao_Entradas: previsao_entradas;
+    ObjRealizado_Entradas: realizado_entradas;
+    ObjRealizado_Saidas: realizado_saidas;
+    ObjSaldo_Diario: saldo_contas;
+    data_para_pesquisa: string;
+    { Private declarations }
+  public
+
+    { Public declarations }
+  end;
+
+var
+  f_fluxo_caixa: Tf_fluxo_caixa;
+
+implementation
+
+{$R *.dfm}
+
+uses data_module;
+
+procedure Tf_fluxo_caixa.btfiltrarClick(Sender: TObject);
+var
+  i, j: integer;
+begin
+
+  ObjPrevisao_Entradas := previsao_entradas.criar;
+  ObjRealizado_Entradas := realizado_entradas.criar;
+  ObjPrevisao_Saidas := previsao.criar;
+  ObjRealizado_Saidas := realizado_saidas.criar;
+  ObjSaldo_Diario := saldo_contas.criar;
+  limpa_tela;
+  Data;
+  ObjPrevisao_Entradas.data_pesquisa := data_para_pesquisa;
+  ObjRealizado_Entradas.data_pesquisa := data_para_pesquisa;
+  ObjPrevisao_Saidas.data_pesquisa := data_para_pesquisa;
+  ObjRealizado_Saidas.data_pesquisa := data_para_pesquisa;
+  ObjSaldo_Diario.data_pesquisa := data_para_pesquisa;
+  ObjPrevisao_Entradas.calcular;
+  ObjRealizado_Entradas.calcular;
+  ObjPrevisao_Saidas.calcular;
+  ObjRealizado_Saidas.calcular;
+  ObjSaldo_Diario.calcular;
+
+  // Entradas Previsão
+
+  i := 1;
+  while i <= 31 do
+  begin
+
+    q_atualizar_tela.Close;
+    q_atualizar_tela.SQL.Clear;
+    q_atualizar_tela.SQL.Add
+      ('UPDATE FLX_FLUXO_CAIXA SET C1 = :valor where DIA = :dia');
+    q_atualizar_tela.Parameters.ParamByName('valor').Value :=
+      ObjPrevisao_Entradas.previsao_entrada_dia_total[i];
+    q_atualizar_tela.Parameters.ParamByName('dia').Value :=
+      formatfloat('00', i);
+    q_atualizar_tela.ExecSQL;
+    i := i + 1;
+
+  end;
+
+  // Entradas Realizado
+
+  i := 1;
+  while i <= 31 do
+  begin
+
+    q_atualizar_tela.Close;
+    q_atualizar_tela.SQL.Clear;
+    q_atualizar_tela.SQL.Add
+      ('UPDATE FLX_FLUXO_CAIXA SET C2 = :valor where DIA = :dia');
+    q_atualizar_tela.Parameters.ParamByName('valor').Value :=
+      ObjRealizado_Entradas.realizado_entrada_dia_total[i];
+    q_atualizar_tela.Parameters.ParamByName('dia').Value :=
+      formatfloat('00', i);
+    q_atualizar_tela.ExecSQL;
+    i := i + 1;
+
+  end;
+
+  // Saidas Previsão
+
+  i := 1;
+  while i <= 31 do
+  begin
+
+    q_atualizar_tela.Close;
+    q_atualizar_tela.SQL.Clear;
+    q_atualizar_tela.SQL.Add
+      ('UPDATE FLX_FLUXO_CAIXA SET C3 = :valor where DIA = :dia');
+    q_atualizar_tela.Parameters.ParamByName('valor').Value :=
+      ObjPrevisao_Saidas.previsao_saida_dia_total[i];
+    q_atualizar_tela.Parameters.ParamByName('dia').Value :=
+      formatfloat('00', i);
+    q_atualizar_tela.ExecSQL;
+    i := i + 1;
+
+  end;
+
+
+  // Saidas Realizado
+
+  i := 1;
+  while i <= 31 do
+  begin
+
+    q_atualizar_tela.Close;
+    q_atualizar_tela.SQL.Clear;
+    q_atualizar_tela.SQL.Add
+      ('UPDATE FLX_FLUXO_CAIXA SET C4 = :valor where DIA = :dia');
+    q_atualizar_tela.Parameters.ParamByName('valor').Value :=
+      ObjRealizado_Saidas.realizado_saida_dia_total[i];
+    q_atualizar_tela.Parameters.ParamByName('dia').Value :=
+      formatfloat('00', i);
+    q_atualizar_tela.ExecSQL;
+    i := i + 1;
+
+  end;
+
+  // Saldo Realizado
+
+  // if formatdatetime('MM', now) = copy(data_para_pesquisa, 4, 2) then
+  // begin
+
+  i := 1;
+  while i <= 31 do
+  begin
+
+    q_atualizar_tela.Close;
+    q_atualizar_tela.SQL.Clear;
+    q_atualizar_tela.SQL.Add
+      ('UPDATE FLX_FLUXO_CAIXA SET C6 = :valor where DIA = :dia');
+    q_atualizar_tela.Parameters.ParamByName('valor').Value :=
+      ObjSaldo_Diario.saldo_total_dia[i];
+    q_atualizar_tela.Parameters.ParamByName('dia').Value :=
+      formatfloat('00', i);
+    q_atualizar_tela.ExecSQL;
+    i := i + 1;
+
+  end;
+
+  lbinicial.Caption := 'R$ ' + formatfloat('0.00',
+    ObjSaldo_Diario.saldo_inicial);
+
+  // end;
+  lbsaldo.Caption := 'R$ ' + formatfloat('0.00', ObjSaldo_Diario.saldo_total);
+
+  calcular;
+  atualiza_tela;
+  ObjPrevisao_Entradas.destruir;
+  ObjRealizado_Entradas.destruir;
+  ObjPrevisao_Saidas.destruir;
+  ObjSaldo_Diario.destruir;
+
+end;
+
+procedure Tf_fluxo_caixa.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+
+  q_limpa_tela.Close;
+  q_limpa_tela.ExecSQL;
+  Action := cafree;
+
+end;
+
+procedure Tf_fluxo_caixa.limpa_tela;
+begin
+  q_limpa_tela.Close;
+  q_limpa_tela.ExecSQL;
+
+end;
+
+procedure Tf_fluxo_caixa.atualiza_tela;
+begin
+  tb_fluxo.Close;
+  tb_fluxo.Open;
+end;
+
+procedure Tf_fluxo_caixa.calcular;
+var
+  i: integer;
+  saldo_atual: extended;
+begin
+  tb_fluxo.Close;
+  tb_fluxo.Open;
+
+  tb_fluxo.First;
+
+  i := 1;
+
+  if formatdatetime('MM', now) = copy(data_para_pesquisa, 4, 2) then
+  begin
+        saldo_atual := ObjSaldo_Diario.saldo_inicial;
+        while tb_fluxo.Eof = false do
+        begin
+              if tb_fluxo.FieldByName('C6').AsFloat <> 0 then
+              begin
+
+                    tb_fluxo.Edit;
+                    tb_fluxo.FieldByName('C5').Value := tb_fluxo.FieldByName('C1').AsFloat;
+                    tb_fluxo.Post;
+                    saldo_atual := tb_fluxo.FieldByName('C6').AsFloat;
+
+              end
+              else
+              begin
+
+                    tb_fluxo.Edit;
+                    tb_fluxo.FieldByName('C5').Value :=
+                    (tb_fluxo.FieldByName('C1').AsFloat - tb_fluxo.FieldByName('C3')
+                    .AsFloat) + saldo_atual;
+                    tb_fluxo.Post;
+                    saldo_atual := tb_fluxo.FieldByName('C6').AsFloat;
+
+              end;
+              tb_fluxo.Next;
+        end;
+
+  end
+  else
+  begin
+
+        while tb_fluxo.Eof = false do
+        begin
+
+              if tb_fluxo.FieldByName('C6').AsFloat <> 0 then
+              begin
+                    tb_fluxo.Edit;
+                    tb_fluxo.FieldByName('C5').Value := tb_fluxo.FieldByName('C6').AsFloat;
+                    tb_fluxo.Post;
+                    saldo_atual := tb_fluxo.FieldByName('C5').AsFloat;
+
+              end
+              else
+              begin
+                    tb_fluxo.Edit;
+                    tb_fluxo.FieldByName('C5').Value :=
+                    (tb_fluxo.FieldByName('C1').AsFloat - tb_fluxo.FieldByName('C3')
+                    .AsFloat) + saldo_atual;
+                    tb_fluxo.Post;
+                    saldo_atual := tb_fluxo.FieldByName('C5').AsFloat;
+              end;
+              tb_fluxo.Next;
+        end;
+  end;
+end;
+
+procedure Tf_fluxo_caixa.Data;
+begin
+  if cbmes.Text = 'JANEIRO' then
+  Begin
+    data_para_pesquisa := '01/01/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'FEVEREIRO' then
+  Begin
+    data_para_pesquisa := '01/02/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'MARÇO' then
+  Begin
+    data_para_pesquisa := '01/03/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'ABRIL' then
+  Begin
+    data_para_pesquisa := '01/04/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'MAIO' then
+  Begin
+    data_para_pesquisa := '01/05/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'JUNHO' then
+  Begin
+    data_para_pesquisa := '01/06/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'JULHO' then
+  Begin
+    data_para_pesquisa := '01/07/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'AGOSTO' then
+  Begin
+    data_para_pesquisa := '01/08/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'SETEMBRO' then
+  Begin
+    data_para_pesquisa := '01/09/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'OUTUBRO' then
+  Begin
+    data_para_pesquisa := '01/10/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'NOVEMBRO' then
+  Begin
+    data_para_pesquisa := '01/11/' + cbano.Text;
+  End;
+
+  if cbmes.Text = 'DEZEMBRO' then
+  Begin
+    data_para_pesquisa := '01/12/' + cbano.Text;
+  End;
+end;
+
+end.

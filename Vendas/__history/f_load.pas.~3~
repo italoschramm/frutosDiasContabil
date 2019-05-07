@@ -1,0 +1,26 @@
+unit f_load;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls;
+
+type
+  Tfload = class(TForm)
+    ProgressBar1: TProgressBar;
+    lbload: TLabel;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fload: Tfload;
+
+implementation
+
+{$R *.dfm}
+
+end.

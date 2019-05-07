@@ -1,0 +1,24 @@
+unit realizado_saidas;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+
+type
+  Tf_realizado_saidas = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  f_realizado_saidas: Tf_realizado_saidas;
+
+implementation
+
+{$R *.dfm}
+
+end.

@@ -1,0 +1,65 @@
+unit realizado_saidas;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Grids,
+  Vcl.DBGrids, Data.Win.ADODB, Data.DB;
+
+type
+  Tf_realizado_saidas = class(TForm)
+    Panel1: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    lbsaldo: TLabel;
+    lbinicial: TLabel;
+    Label5: TLabel;
+    cbmes: TComboBox;
+    cbano: TComboBox;
+    btfiltrar: TButton;
+    DBGrid1: TDBGrid;
+    DataSource1: TDataSource;
+    tb_tela: TADOTable;
+    tb_telaDIA: TWideStringField;
+    tb_telaC1: TFloatField;
+    tb_telaC2: TFloatField;
+    tb_telaC3: TFloatField;
+    tb_telaC4: TFloatField;
+    tb_telaC5: TFloatField;
+    tb_telaC6: TFloatField;
+    tb_telaC7: TFloatField;
+    tb_telaC8: TFloatField;
+    tb_telaC9: TFloatField;
+    tb_telaC10: TFloatField;
+    tb_telaC11: TFloatField;
+    tb_telaC12: TFloatField;
+    tb_telaC13: TFloatField;
+    tb_telaC14: TFloatField;
+    tb_telaC15: TFloatField;
+    tb_telaC16: TFloatField;
+    tb_telaC17: TFloatField;
+    tb_telaC18: TFloatField;
+    tb_telaC19: TFloatField;
+    tb_telaC20: TFloatField;
+    tb_telaC21: TFloatField;
+    tb_telaC22: TFloatField;
+    tb_telaTOTAL: TFloatField;
+    q_util: TADOQuery;
+    q_atualizar_tela: TADOQuery;
+    q_limpa_tela: TADOQuery;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  f_realizado_saidas: Tf_realizado_saidas;
+
+implementation
+
+{$R *.dfm}
+
+end.

@@ -1,0 +1,5829 @@
+object dm: Tdm
+  OldCreateOrder = False
+  Height = 689
+  Width = 2471
+  object q_schemas: TADOQuery
+    AutoCalcFields = False
+    Connection = conexao
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      
+        'select upper(nsu.schema_name) schema_name, description, principa' +
+        'l'#11
+      'from sys.nbs_schema ns, sys.nbs_schema_user nsu'#11
+      'where ns.schema_name = nsu.schema_name'#11
+      ' and schema_user = user'#11
+      'order by schema_name')
+    Left = 48
+    Top = 72
+    object q_schemasSCHEMA_NAME: TWideStringField
+      FieldName = 'SCHEMA_NAME'
+    end
+    object q_schemasDESCRIPTION: TWideStringField
+      FieldName = 'DESCRIPTION'
+      Size = 50
+    end
+    object q_schemasPRINCIPAL: TWideStringField
+      FieldName = 'PRINCIPAL'
+      Size = 1
+    end
+  end
+  object ds_schemas: TDataSource
+    DataSet = q_schemas
+    Left = 48
+    Top = 136
+  end
+  object conexao: TADOConnection
+    ConnectionString = 
+      'Provider=MSDASQL.1;Password=FD1853;Persist Security Info=True;Us' +
+      'er ID=NBS;Data Source=nbs'
+    CursorLocation = clUseServer
+    KeepConnection = False
+    LoginPrompt = False
+    Provider = 'MSDASQL.1'
+    Left = 48
+    Top = 264
+  end
+  object q_consulta: TADOQuery
+    AutoCalcFields = False
+    Connection = conexao
+    CursorType = ctStatic
+    Parameters = <
+      item
+        Name = 'data1'
+        Attributes = [paNullable]
+        DataType = ftWideString
+        Precision = 231
+        Size = 999
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Attributes = [paNullable]
+        DataType = ftWideString
+        Precision = 231
+        Size = 999
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT A.CONTA_DEBITO, A.CONTA_CREDITO, SUM(A.VAL' +
+        'OR) AS VALOR, A.CCUSTO_DEBITO, A.CCUSTO_CREDITO, '
+      'B.COD_FABRICA, B.NATUREZA, B.COD_FABRICA_A '
+      'FROM LANCAMENTO_CONTABIL A, CONTA_CONTABIL B '
+      
+        'WHERE A.DATA >= :data1 and A.DATA <= :data2 AND A.COD_GRUPO_PC =' +
+        ' 25 AND (A.CCUSTO_DEBITO <> 0 OR A.CCUSTO_CREDITO <> 0) AND'
+      
+        '(A.CONTA_DEBITO = B.COD_CONTABIL OR A.CONTA_CREDITO = B.COD_CONT' +
+        'ABIL) AND B.COD_FABRICA <> 0 AND A.COD_GRUPO_PC = B.COD_GRUPO_PC'
+      
+        'GROUP BY (A.CONTA_DEBITO, A.CONTA_CREDITO, A.CCUSTO_DEBITO, A.CC' +
+        'USTO_CREDITO, B.COD_FABRICA, B.NATUREZA, B.COD_FABRICA_A) )')
+    Left = 40
+    Top = 336
+    object q_consultaCONTA_DEBITO: TStringField
+      FieldName = 'CONTA_DEBITO'
+    end
+    object q_consultaCONTA_CREDITO: TStringField
+      FieldName = 'CONTA_CREDITO'
+    end
+    object q_consultaVALOR: TBCDField
+      FieldName = 'VALOR'
+      Precision = 15
+      Size = 2
+    end
+    object q_consultaCCUSTO_DEBITO: TIntegerField
+      FieldName = 'CCUSTO_DEBITO'
+    end
+    object q_consultaCCUSTO_CREDITO: TIntegerField
+      FieldName = 'CCUSTO_CREDITO'
+    end
+    object q_consultaCOD_FABRICA: TIntegerField
+      FieldName = 'COD_FABRICA'
+    end
+    object q_consultaNATUREZA: TStringField
+      FieldName = 'NATUREZA'
+      Size = 1
+    end
+    object q_consultaCOD_FABRICA_A: TStringField
+      FieldName = 'COD_FABRICA_A'
+      Size = 1
+    end
+  end
+  object q_aux: TADOQuery
+    AutoCalcFields = False
+    Connection = conexao
+    CursorType = ctStatic
+    Parameters = <>
+    Left = 48
+    Top = 200
+  end
+  object conexao_sql: TADOConnection
+    Connected = True
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Password=maop2307;Persist Security Info=True' +
+      ';User ID=sa;Initial Catalog=frutosdias;Data Source=10.3.122.16;U' +
+      'se Procedure for Prepare=1;Auto Translate=True;Packet Size=4096;' +
+      'Workstation ID=FD-CPD-004;Use Encryption for Data=False;Tag with' +
+      ' column collation when possible=False'
+    LoginPrompt = False
+    Provider = 'SQLOLEDB.1'
+    Left = 48
+    Top = 16
+  end
+  object q_historico_saidas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT SUM(TOTAL_DOCUMENTO) AS VALOR, COD_NATUREZA_RECEITA_DESPE' +
+        'SA FROM VW_CONTA_PAGAR WHERE (TRUNC(DATA_QUITACAO) >= :data1 AND' +
+        ' TRUNC(DATA_QUITACAO) <= :data2)'
+      
+        'AND (COD_NATUREZA_RECEITA_DESPESA = 147) GROUP BY COD_NATUREZA_R' +
+        'ECEITA_DESPESA')
+    Left = 856
+    Top = 16
+  end
+  object q_pagos: TADOQuery
+    Connection = conexao_sql
+    Parameters = <
+      item
+        Name = 'data1'
+        DataType = ftDateTime
+        NumericScale = 3
+        Precision = 23
+        Size = 16
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        DataType = ftDateTime
+        NumericScale = 3
+        Precision = 23
+        Size = 16
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM FLX_PREVISAO WHERE DATA >= :data1 AND DATA <= :dat' +
+        'a2')
+    Left = 760
+    Top = 102
+  end
+  object q_historico: TADOQuery
+    Connection = conexao_sql
+    Parameters = <
+      item
+        Name = 'data1'
+        DataType = ftDateTime
+        NumericScale = 3
+        Precision = 23
+        Size = 16
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        DataType = ftDateTime
+        NumericScale = 3
+        Precision = 23
+        Size = 16
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT * FROM FLX_PREVISAO WHERE '
+      'DATA >= :data1 AND DATA <= :data2')
+    Left = 992
+    Top = 86
+  end
+  object q_historico_vendas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'select A.EMISSAO, (A.TOTAL_NOTA - A.DESCONTO_INCONDICIONAL) AS V' +
+        'ALOR, B.TIPO_PLANO '#11
+      ''
+      
+        'from vendas A, VEICULOS B where (TRUNC(A.emissao) >= :data1) and' +
+        ' A.COD_NATUREZA = 5405 AND A.STATUS = 0  AND A.COD_EMPRESA = 2 A' +
+        'ND A.COD_EMPRESA = B.COD_EMPRESA'#11
+      ''
+      'AND A.CHASSI_RESUMIDO = B.CHASSI_RESUMIDO ORDER BY A.EMISSAO')
+    Left = 760
+    Top = 16
+  end
+  object q_vendas_saidas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'select A.EMISSAO, (A.TOTAL_NOTA - A.DESCONTO_INCONDICIONAL) AS V' +
+        'ALOR, B.TIPO_PLANO '#11
+      
+        'from vendas A, VEICULOS B where (TRUNC(A.emissao) >= :data1 AND ' +
+        'TRUNC(A.EMISSAO) <= :data2) and A.COD_NATUREZA = 5405 AND A.STAT' +
+        'US = 0  AND A.COD_EMPRESA = 2 AND A.COD_EMPRESA = B.COD_EMPRESA'#11
+      'AND A.CHASSI_RESUMIDO = B.CHASSI_RESUMIDO ORDER BY A.EMISSAO')
+    Left = 968
+    Top = 24
+  end
+  object q_vendas_cartoes: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (select trunc(p.data_vencimento) as data,         ' +
+        '                               '
+      
+        ' sum(p.valor) as VALOR                                          ' +
+        ' '
+      
+        'from creceber_cartao_parc p, creceber_cartao c, empresas em     ' +
+        '    '
+      
+        'where p.cod_empresa = em.cod_empresa                            ' +
+        '    '
+      
+        '  and p.cod_empresa = c.cod_empresa                             ' +
+        '    '
+      
+        '  and p.cod_controle_cartao = c.cod_controle_cartao             ' +
+        '    '
+      
+        '  and p.data = c.data                                           ' +
+        '    '
+      '  and trunc(p.data_vencimento) >= :data1                     '
+      '  and trunc(p.data_vencimento) <= :data2                      '
+      '  AND EM.COD_EMPRESA IN (2)  '
+      'group by trunc(p.data_vencimento) '
+      'order by data)')
+    Left = 1056
+    Top = 32
+  end
+  object q_historico_vendas_veic: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(A.VALOR_PRINCIPAL + NVL(A.VALOR_MULTA,' +
+        '0) + NVL(A.VALOR_JURO,0) + NVL(A.SALDO_OUTROS,0) + NVL(A.VALOR_D' +
+        'ESP_COBRANCA,0) - NVL(A.VALOR_DESCONTO,0)) AS VALOR  '#11
+      ''
+      'FROM BAIXA_CONTAS_RECEBER A, VW_CRECEBER B, CONTA_CORRENTE C'#11
+      ''
+      
+        'WHERE (TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= ' +
+        ':data2) AND A.NR_FATURA = B.NR_FATURA AND A.PARCELA = B.PARCELA'#11
+      ''
+      
+        'AND A.DATA_EMISSAO = B.DATA_EMISSAO AND B.COD_NATUREZA_RECEITA_D' +
+        'ESPESA = 150 AND A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_EMPRESA' +
+        ' = 2 AND A.NR_FATURA = B.NR_FATURA'#11
+      ''
+      
+        'AND A.COD_CONTA_TESOURARIA = C.COD_CONTA_CORRENTE AND A.COD_EMPR' +
+        'ESA_TESOURARIA = C.COD_EMPRESA AND A.COD_TIPO_FATURA = B.COD_TIP' +
+        'O_FATURA)')
+    Left = 360
+    Top = 24
+  end
+  object q_vendas_dinheiro: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT * FROM (SELECT SUM(B.VALOR)  AS VALOR '
+      
+        'FROM VENDAS A, PAGAMENTO_VENDA B WHERE A.CONTROLE = B.CONTROLE A' +
+        'ND A.COD_EMPRESA = 2 AND (TRUNC(A.EMISSAO) >= :data1 AND TRUNC(A' +
+        '.EMISSAO) <= :data2)'
+      'AND B.COD_FORMA_PGTO = 11) ')
+    Left = 568
+    Top = 80
+  end
+  object q_entradas_boleto: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR'
+      'FROM CONTAS_RECEBER '
+      
+        'WHERE COD_FORMA_COBRANCA = 275 AND (TRUNC(DATA_VENCIMENTO) >= :d' +
+        'ata1 AND TRUNC(DATA_VENCIMENTO) <= :data2) AND COD_EMPRESA = 2'
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 664
+    Top = 80
+  end
+  object q_entradas_comissao: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR '#11
+      'FROM CONTAS_RECEBER '#11
+      
+        'WHERE COD_FORMA_COBRANCA = 262 AND (TRUNC(DATA_VENCIMENTO) >= :d' +
+        'ata1 AND TRUNC(DATA_VENCIMENTO) <= :data2) AND COD_EMPRESA = 2'#11
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 656
+    Top = 16
+  end
+  object q_entradas_gm: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR '#11
+      'FROM CONTAS_RECEBER '#11
+      
+        'WHERE COD_FORMA_COBRANCA = 267 AND (TRUNC(DATA_VENCIMENTO) >= :d' +
+        'ata1 AND TRUNC(DATA_VENCIMENTO) <= :data2) AND COD_EMPRESA = 2'#11
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 552
+    Top = 16
+  end
+  object q_vendas_veic: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT  SUM(A.VALOR_PARCELA) AS VALOR, TRUNC(A.DA' +
+        'TA_BAIXA) AS DATA'
+      
+        'FROM CONTAS_RECEBER A, FATURA_RECEBER B WHERE A.NR_FATURA = B.NR' +
+        '_FATURA AND (TRUNC(A.DATA_BAIXA) >= :data1  AND TRUNC(A.DATA_BAI' +
+        'XA)  <= :data2)'
+      
+        'AND A.COD_TIPO_FATURA = B.COD_TIPO_FATURA AND TRUNC(A.DATA_EMISS' +
+        'AO) = TRUNC(B.DATA_EMISSAO)'
+      'AND B.COD_NATUREZA_RECEITA_DESPESA = 150'
+      'GROUP BY TRUNC(A.DATA_BAIXA))')
+    Left = 1064
+    Top = 80
+  end
+  object q_cartoes: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * from (SELECT TRUNC(B.DATA_VENCIMENTO) AS DATA, SUM(B.VA' +
+        'LOR) AS VALOR, C.DIAS_VENCIMENTO  FROM CRECEBER_CARTAO A, CRECEB' +
+        'ER_CARTAO_PARC B, CARTAO_CREDITO C'#11
+      
+        'WHERE A.COD_CONTROLE_CARTAO = B.COD_CONTROLE_CARTAO AND A.COD_CA' +
+        'RTAO_CREDITO = C.COD_CARTAO_CREDITO '#11
+      
+        'AND (TRUNC(B.DATA_VENCIMENTO) >= :data1 AND TRUNC(B.DATA_VENCIME' +
+        'NTO) <= :data2)'#11
+      'AND C.COD_EMPRESA = 2'#11
+      'GROUP BY TRUNC(B.DATA_VENCIMENTO), C.DIAS_VENCIMENTO)')
+    Left = 864
+    Top = 88
+  end
+  object q_saida_semi_novos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR, DATA_VENCIMEN' +
+        'TO FROM CONTA_PAGAR '
+      
+        'WHERE (COD_NATUREZA_RECEITA_DESPESA = 145 OR COD_NATUREZA_RECEIT' +
+        'A_DESPESA = 146)'
+      
+        ' AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2  AN' +
+        'D '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      'AND TIPO_DOCUMENTO <> '#39'TR'#39
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 640
+    Top = 488
+  end
+  object q_saida_fornecedor_diversos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR, DATA_VENCIMEN' +
+        'TO FROM CONTA_PAGAR '
+      
+        'WHERE  (COD_NATUREZA_RECEITA_DESPESA = 147 OR COD_NATUREZA_RECEI' +
+        'TA_DESPESA = 148'
+      
+        'OR COD_NATUREZA_RECEITA_DESPESA = 149 OR COD_NATUREZA_RECEITA_DE' +
+        'SPESA = 214 OR COD_NATUREZA_RECEITA_DESPESA = 150'
+      ') '
+      'AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2 AND '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      'AND TIPO_DOCUMENTO <> '#39'TR'#39#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      'AND'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE <> '#39'23725486549'#39' AND COD_CLIENTE <> '#39'4141032549'#39' AN' +
+        'D COD_CLIENTE <> '#39'21560684534'#39' AND COD_CLIENTE <> '#39'394460005887'#39 +
+        ' AND COD_CLIENTE <> '#39'13927801000491'#39' '#11
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'360305000104'#39' AND COD_CLIENTE <> '#39'1393707300' +
+        '0156'#39' AND COD_CLIENTE <> '#39'29979036000140'#39' AND COD_CLIENTE <> '#39'13' +
+        '937073000318'#39' AND COD_CLIENTE <> '#39'13927801000149'#39' AND'#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'47193149000106'#39' AND COD_CLIENTE <> '#39'723737301426' +
+        '0'#39' AND COD_CLIENTE <> '#39'60701190000104'#39' AND'#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'15139629000194'#39' AND COD_CLIENTE <> '#39'404325440001' +
+        '47'#39' AND COD_CLIENTE <> '#39'13504675000110'#39' AND COD_CLIENTE <> '#39'3420' +
+        '926008966'#39' AND '#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'7436040000120'#39' AND COD_CLIENTE <> '#39'2348447000262' +
+        #39' AND COD_CLIENTE <> '#39'33927658000100'#39' AND COD_CLIENTE <> '#39'255815' +
+        '7001215'#39' AND COD_CLIENTE <> '#39'33000118000500'#39' AND'#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'2558157002459'#39' AND COD_CLIENTE <> '#39'2870783400015' +
+        '0'#39' AND COD_CLIENTE <> '#39'11011516000158'#39' AND COD_CLIENTE <> '#39'91088' +
+        '328001309'#39' AND'#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'59275792008991'#39' AND COD_CLIENTE <> '#39'592757920027' +
+        '99'#39
+      ')'
+      ''
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 504
+    Top = 488
+  end
+  object q_saida_venda_direta: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR, DATA_VENCIMEN' +
+        'TO FROM CONTA_PAGAR '#11
+      ''
+      ''
+      ''
+      
+        'WHERE COD_NATUREZA_RECEITA_DESPESA = 200 AND DATA_VENCIMENTO >= ' +
+        ':data1 AND DATA_VENCIMENTO <= :data2 AND '#11
+      ''
+      ''
+      ''
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'#11
+      ''
+      ''
+      'AND TIPO_DOCUMENTO <> '#39'TR'#39#11
+      ''
+      ''
+      ''
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 360
+    Top = 488
+  end
+  object q_saida_consorcio: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR, DATA_VENCIMEN' +
+        'TO FROM CONTA_PAGAR '#11
+      ''
+      ''
+      ''
+      
+        'WHERE COD_NATUREZA_RECEITA_DESPESA = 202 AND DATA_VENCIMENTO >= ' +
+        ':data1 AND DATA_VENCIMENTO <= :data2'
+      ''
+      'AND '#11
+      ''
+      ''
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3) AND TIPO_DOCUMENTO <> '#39'TR'#39#11
+      #11
+      ''
+      ''
+      ''
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 200
+    Top = 496
+  end
+  object q_saida_diversos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR, DATA_VENCIMEN' +
+        'TO FROM CONTA_PAGAR '#11
+      ''
+      ''
+      ''
+      
+        'WHERE (COD_NATUREZA_RECEITA_DESPESA <> 202 AND COD_NATUREZA_RECE' +
+        'ITA_DESPESA <> 143 AND COD_NATUREZA_RECEITA_DESPESA <> 150 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 144 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 145 AND COD_NATUREZA_RECEITA_DESPESA <> 146 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 215 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 216 AND COD_NATUREZA_RECEITA_DESPESA <> 147 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 148 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 149 AND COD_NATUREZA_RECEITA_DESPESA <> 214)'#11
+      ''
+      ''
+      ''
+      
+        'AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2 AND ' +
+        #11
+      ''
+      ''
+      ''
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3) AND '#11
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE <> '#39'15139629000194'#39' AND COD_CLIENTE <> '#39'11234522000' +
+        '174'#39' AND COD_CLIENTE <> '#39'394460005887'#39' '#11
+      ''
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'13927801000491'#39' AND COD_CLIENTE <> '#39'36030500' +
+        '0104'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'13937073000156'#39' AND COD_CLIENTE <> '#39'299790360001' +
+        '40'#39' AND COD_CLIENTE <> '#39'13937073000318'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'13927801000149'#39' AND COD_CLIENTE <> '#39'404325440001' +
+        '47'#39' AND COD_CLIENTE <> '#39'13504675000110'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'3420926008966'#39' AND COD_CLIENTE <> '#39'7436040000120' +
+        #39' AND COD_CLIENTE <> '#39'2348447000262'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'33927658000100'#39' AND COD_CLIENTE <> '#39'255815700121' +
+        '5'#39' AND COD_CLIENTE <> '#39'33000118000500'#39'AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'2558157002459'#39' AND COD_CLIENTE <> '#39'2870783400015' +
+        '0'#39' AND COD_CLIENTE <> '#39'11011516000158'#39' AND'#11
+      ''
+      ''
+      ''
+      'COD_CLIENTE <> '#39'91088328001309'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'47193149000106'#39' AND COD_CLIENTE <> '#39'723737301426' +
+        '0'#39' AND COD_CLIENTE <> '#39'60701190000104'#39' AND COD_CLIENTE <> '#39'59275' +
+        '792008991'#39#11
+      ''
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'59275792002799'#39' AND COD_CLIENTE <> '#39'23725486' +
+        '549'#39' AND COD_CLIENTE <> '#39'4141032549'#39' AND COD_CLIENTE <> '#39'2156068' +
+        '4534'#39')  AND TIPO_DOCUMENTO <> '#39'TR'#39#11
+      ''
+      ''
+      ''
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 48
+    Top = 496
+  end
+  object q_saida_veiculos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR, DATA_VENCIMEN' +
+        'TO FROM CONTA_PAGAR '
+      
+        'WHERE (COD_NATUREZA_RECEITA_DESPESA = 143 OR COD_NATUREZA_RECEIT' +
+        'A_DESPESA = 144)'
+      
+        ' AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2  AN' +
+        'D '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      'AND TIPO_DOCUMENTO <> '#39'TR'#39
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 800
+    Top = 488
+  end
+  object q_realizado_saida_diversos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'
+      'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND'
+      
+        '(COD_CLIENTE <> '#39'15139629000194'#39' AND COD_CLIENTE <> '#39'11234522000' +
+        '174'#39' AND COD_CLIENTE <> '#39'394460005887'#39' '#11
+      ''
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'13927801000491'#39' AND COD_CLIENTE <> '#39'36030500' +
+        '0104'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'13937073000156'#39' AND COD_CLIENTE <> '#39'299790360001' +
+        '40'#39' AND COD_CLIENTE <> '#39'13937073000318'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'13927801000149'#39' AND COD_CLIENTE <> '#39'404325440001' +
+        '47'#39' AND COD_CLIENTE <> '#39'13504675000110'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'3420926008966'#39' AND COD_CLIENTE <> '#39'7436040000120' +
+        #39' AND COD_CLIENTE <> '#39'2348447000262'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'33927658000100'#39' AND COD_CLIENTE <> '#39'255815700121' +
+        '5'#39' AND COD_CLIENTE <> '#39'33000118000500'#39'AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'2558157002459'#39' AND COD_CLIENTE <> '#39'2870783400015' +
+        '0'#39' AND COD_CLIENTE <> '#39'11011516000158'#39' AND'#11
+      ''
+      ''
+      ''
+      'COD_CLIENTE <> '#39'91088328001309'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'47193149000106'#39' AND COD_CLIENTE <> '#39'723737301426' +
+        '0'#39' AND COD_CLIENTE <> '#39'60701190000104'#39' AND COD_CLIENTE <> '#39'59275' +
+        '792008991'#39#11
+      ''
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'59275792002799'#39' AND COD_CLIENTE <> '#39'23725486' +
+        '549'#39' AND COD_CLIENTE <> '#39'4141032549'#39' AND COD_CLIENTE <> '#39'2156068' +
+        '4534'#39')  AND  (COD_NATUREZA_RECEITA_DESPESA <> 202 AND COD_NATURE' +
+        'ZA_RECEITA_DESPESA <> 143 AND COD_NATUREZA_RECEITA_DESPESA <> 15' +
+        '0 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 144 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 145 AND COD_NATUREZA_RECEITA_DESPESA <> 146 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 215 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 216 AND COD_NATUREZA_RECEITA_DESPESA <> 147 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 148 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 149 AND COD_NATUREZA_RECEITA_DESPESA <> 214)'
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND '
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'
+      'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND '
+      
+        '(COD_CLIENTE <> '#39'15139629000194'#39' AND COD_CLIENTE <> '#39'11234522000' +
+        '174'#39' AND COD_CLIENTE <> '#39'394460005887'#39' '#11
+      ''
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'13927801000491'#39' AND COD_CLIENTE <> '#39'36030500' +
+        '0104'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'13937073000156'#39' AND COD_CLIENTE <> '#39'299790360001' +
+        '40'#39' AND COD_CLIENTE <> '#39'13937073000318'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'13927801000149'#39' AND COD_CLIENTE <> '#39'404325440001' +
+        '47'#39' AND COD_CLIENTE <> '#39'13504675000110'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'3420926008966'#39' AND COD_CLIENTE <> '#39'7436040000120' +
+        #39' AND COD_CLIENTE <> '#39'2348447000262'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'33927658000100'#39' AND COD_CLIENTE <> '#39'255815700121' +
+        '5'#39' AND COD_CLIENTE <> '#39'33000118000500'#39'AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'2558157002459'#39' AND COD_CLIENTE <> '#39'2870783400015' +
+        '0'#39' AND COD_CLIENTE <> '#39'11011516000158'#39' AND'#11
+      ''
+      ''
+      ''
+      'COD_CLIENTE <> '#39'91088328001309'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'47193149000106'#39' AND COD_CLIENTE <> '#39'723737301426' +
+        '0'#39' AND COD_CLIENTE <> '#39'60701190000104'#39' AND COD_CLIENTE <> '#39'59275' +
+        '792008991'#39#11
+      ''
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'59275792002799'#39' AND COD_CLIENTE <> '#39'23725486' +
+        '549'#39' AND COD_CLIENTE <> '#39'4141032549'#39' AND COD_CLIENTE <> '#39'2156068' +
+        '4534'#39
+      
+        ') AND (COD_NATUREZA_RECEITA_DESPESA <> 202 AND COD_NATUREZA_RECE' +
+        'ITA_DESPESA <> 143 AND COD_NATUREZA_RECEITA_DESPESA <> 150 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 144 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 145 AND COD_NATUREZA_RECEITA_DESPESA <> 146 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 215 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 216 AND COD_NATUREZA_RECEITA_DESPESA <> 147 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 148 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 149 AND COD_NATUREZA_RECEITA_DESPESA <> 214)'
+      'GROUP BY A.DATA_BAIXA)'
+      'GROUP BY DATA_QUITACAO'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      '')
+    Left = 48
+    Top = 432
+  end
+  object q_realizado_saida_consorcio: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      ''
+      ''
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ''
+      ''
+      ''
+      ''
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      ''
+      ''
+      ''
+      ''
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND (B' +
+        '.COD_NATUREZA_RECEITA_DESPESA = 202 OR B.COD_NATUREZA_RECEITA_DE' +
+        'SPESA = 203)'#11
+      ''
+      ''
+      ''
+      ''
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      ''
+      ''
+      ''
+      ''
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND (B.COD_N' +
+        'ATUREZA_RECEITA_DESPESA = 202 OR B.COD_NATUREZA_RECEITA_DESPESA ' +
+        '= 203)'#11
+      ''
+      ''
+      ''
+      ''
+      'GROUP BY A.DATA_BAIXA)'#11
+      ''
+      ''
+      ''
+      ''
+      'GROUP BY DATA_QUITACAO')
+    Left = 200
+    Top = 432
+  end
+  object q_realizado_saida_venda_direta: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      ''
+      #11
+      ''
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ''
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      ''
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      ''
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      ''
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND (B' +
+        '.COD_NATUREZA_RECEITA_DESPESA = 200)'#11
+      ''
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      #11
+      ''
+      'UNION ALL'#11
+      ''
+      #11
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      ''
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      ''
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      ''
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      ''
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      ''
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      ''
+      
+        'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND (B.COD_N' +
+        'ATUREZA_RECEITA_DESPESA = 200)'#11
+      ''
+      'GROUP BY A.DATA_BAIXA)'#11
+      ''
+      'GROUP BY DATA_QUITACAO')
+    Left = 360
+    Top = 432
+  end
+  object q_realizado_saida_fornecedor_diversos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND (B' +
+        '.COD_NATUREZA_RECEITA_DESPESA = 147 OR B.COD_NATUREZA_RECEITA_DE' +
+        'SPESA = 148 OR COD_NATUREZA_RECEITA_DESPESA = 149 OR COD_NATUREZ' +
+        'A_RECEITA_DESPESA = 214 OR COD_NATUREZA_RECEITA_DESPESA = 150)'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      'AND'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE <> '#39'23725486549'#39' AND COD_CLIENTE <> '#39'4141032549'#39' AN' +
+        'D COD_CLIENTE <> '#39'21560684534'#39' AND COD_CLIENTE <> '#39'394460005887'#39 +
+        ' AND COD_CLIENTE <> '#39'13927801000491'#39' '#11
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'360305000104'#39' AND COD_CLIENTE <> '#39'1393707300' +
+        '0156'#39' AND COD_CLIENTE <> '#39'29979036000140'#39' AND COD_CLIENTE <> '#39'13' +
+        '937073000318'#39' AND COD_CLIENTE <> '#39'13927801000149'#39' AND'#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'47193149000106'#39' AND COD_CLIENTE <> '#39'723737301426' +
+        '0'#39' AND COD_CLIENTE <> '#39'60701190000104'#39' AND'#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'15139629000194'#39' AND COD_CLIENTE <> '#39'404325440001' +
+        '47'#39' AND COD_CLIENTE <> '#39'13504675000110'#39' AND COD_CLIENTE <> '#39'3420' +
+        '926008966'#39' AND '#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'7436040000120'#39' AND COD_CLIENTE <> '#39'2348447000262' +
+        #39' AND COD_CLIENTE <> '#39'33927658000100'#39' AND COD_CLIENTE <> '#39'255815' +
+        '7001215'#39' AND COD_CLIENTE <> '#39'33000118000500'#39' AND'#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'2558157002459'#39' AND COD_CLIENTE <> '#39'2870783400015' +
+        '0'#39' AND COD_CLIENTE <> '#39'11011516000158'#39' AND COD_CLIENTE <> '#39'91088' +
+        '328001309'#39' AND'#11
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'59275792008991'#39' AND COD_CLIENTE <> '#39'592757920027' +
+        '99'#39')'
+      ''
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND (B.COD_N' +
+        'ATUREZA_RECEITA_DESPESA = 147 OR B.COD_NATUREZA_RECEITA_DESPESA ' +
+        '= 148 OR COD_NATUREZA_RECEITA_DESPESA = 149 OR COD_NATUREZA_RECE' +
+        'ITA_DESPESA = 214 OR COD_NATUREZA_RECEITA_DESPESA = 150)'
+      'AND'
+      
+        '(COD_CLIENTE <> '#39'23725486549'#39' AND COD_CLIENTE <> '#39'4141032549'#39' AN' +
+        'D COD_CLIENTE <> '#39'21560684534'#39' AND COD_CLIENTE <> '#39'394460005887'#39 +
+        ' AND COD_CLIENTE <> '#39'13927801000491'#39' '
+      
+        'AND COD_CLIENTE <> '#39'360305000104'#39' AND COD_CLIENTE <> '#39'1393707300' +
+        '0156'#39' AND COD_CLIENTE <> '#39'29979036000140'#39' AND COD_CLIENTE <> '#39'13' +
+        '937073000318'#39' AND COD_CLIENTE <> '#39'13927801000149'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'47193149000106'#39' AND COD_CLIENTE <> '#39'723737301426' +
+        '0'#39' AND COD_CLIENTE <> '#39'60701190000104'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'15139629000194'#39' AND COD_CLIENTE <> '#39'404325440001' +
+        '47'#39' AND COD_CLIENTE <> '#39'13504675000110'#39' AND COD_CLIENTE <> '#39'3420' +
+        '926008966'#39' AND '#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'7436040000120'#39' AND COD_CLIENTE <> '#39'2348447000262' +
+        #39' AND COD_CLIENTE <> '#39'33927658000100'#39' AND COD_CLIENTE <> '#39'255815' +
+        '7001215'#39' AND COD_CLIENTE <> '#39'33000118000500'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'2558157002459'#39' AND COD_CLIENTE <> '#39'2870783400015' +
+        '0'#39' AND COD_CLIENTE <> '#39'11011516000158'#39' AND COD_CLIENTE <> '#39'91088' +
+        '328001309'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'59275792008991'#39' AND COD_CLIENTE <> '#39'592757920027' +
+        '99'#39')'
+      'GROUP BY A.DATA_BAIXA)'#11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      'GROUP BY DATA_QUITACAO')
+    Left = 504
+    Top = 432
+  end
+  object q_realizado_saida_semi_novos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      #11
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      
+        'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND (B' +
+        '.COD_NATUREZA_RECEITA_DESPESA = 145 OR B.COD_NATUREZA_RECEITA_DE' +
+        'SPESA = 146)'#11
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      #11
+      'UNION ALL'#11
+      #11
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      
+        'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND (B.COD_N' +
+        'ATUREZA_RECEITA_DESPESA = 145 OR B.COD_NATUREZA_RECEITA_DESPESA ' +
+        '= 146)'#11
+      'GROUP BY A.DATA_BAIXA)'#11
+      'GROUP BY DATA_QUITACAO')
+    Left = 640
+    Top = 432
+  end
+  object q_realizado_saida_veiculos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ''
+      ''
+      ''
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      ''
+      ''
+      ''
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      ''
+      ''
+      ''
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND (B' +
+        '.COD_NATUREZA_RECEITA_DESPESA = 143 OR B.COD_NATUREZA_RECEITA_DE' +
+        'SPESA = 144)'#11
+      ''
+      ''
+      ''
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      ''
+      ''
+      ''
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      ''
+      ''
+      ''
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      ''
+      ''
+      ''
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND (B.COD_N' +
+        'ATUREZA_RECEITA_DESPESA = 143 OR B.COD_NATUREZA_RECEITA_DESPESA ' +
+        '= 144)'#11
+      ''
+      ''
+      ''
+      'GROUP BY A.DATA_BAIXA)'#11
+      ''
+      ''
+      ''
+      'GROUP BY DATA_QUITACAO')
+    Left = 792
+    Top = 432
+  end
+  object q_saida_luz: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_cliente'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR, COD_CLIENTE FROM CONTA_PAGAR '
+      
+        'WHERE (COD_CLIENTE = '#39'15139629000194'#39' OR COD_CLIENTE = '#39'40432544' +
+        '000147'#39' OR COD_CLIENTE = '#39'13504675000110'#39' OR COD_CLIENTE = '#39'3420' +
+        '926008966'#39' OR '
+      
+        'COD_CLIENTE = '#39'7436040000120'#39' OR COD_CLIENTE = '#39'2348447000262'#39' O' +
+        'R COD_CLIENTE = '#39'33927658000100'#39' OR COD_CLIENTE = '#39'2558157001215' +
+        #39' OR COD_CLIENTE = '#39'33000118000500'#39' OR'
+      
+        'COD_CLIENTE = '#39'2558157002459'#39' OR COD_CLIENTE = '#39'28707834000150'#39' ' +
+        'OR COD_CLIENTE = '#39'11011516000158'#39' OR COD_CLIENTE = '#39'910883280013' +
+        '09'#39') '
+      
+        'AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2 AND ' +
+        'COD_CLIENTE = :cod_cliente AND'
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      'AND TIPO_DOCUMENTO <> '#39'TR'#39
+      'GROUP BY DATA_VENCIMENTO, COD_CLIENTE)')
+    Left = 928
+    Top = 488
+  end
+  object q_realizado_saida_luz: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      #11
+      #11
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      #11
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND'#11
+      
+        '(COD_CLIENTE = '#39'15139629000194'#39' OR COD_CLIENTE = '#39'40432544000147' +
+        #39' OR COD_CLIENTE = '#39'13504675000110'#39' OR COD_CLIENTE = '#39'3420926008' +
+        '966'#39' OR '#11
+      
+        'COD_CLIENTE = '#39'7436040000120'#39' OR COD_CLIENTE = '#39'2348447000262'#39' O' +
+        'R COD_CLIENTE = '#39'33927658000100'#39' OR COD_CLIENTE = '#39'2558157001215' +
+        #39' OR COD_CLIENTE = '#39'33000118000500'#39' OR'#11
+      
+        'COD_CLIENTE = '#39'2558157002459'#39' OR COD_CLIENTE = '#39'28707834000150'#39' ' +
+        'OR COD_CLIENTE = '#39'11011516000158'#39' OR COD_CLIENTE = '#39'910883280013' +
+        '09'#39') AND (COD_NATUREZA_RECEITA_DESPESA = 149)'#11
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      #11
+      'UNION ALL'#11
+      #11
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND '#11
+      
+        '(COD_CLIENTE = '#39'15139629000194'#39' OR COD_CLIENTE = '#39'40432544000147' +
+        #39' OR COD_CLIENTE = '#39'13504675000110'#39' OR COD_CLIENTE = '#39'3420926008' +
+        '966'#39' OR '#11
+      
+        'COD_CLIENTE = '#39'7436040000120'#39' OR COD_CLIENTE = '#39'2348447000262'#39' O' +
+        'R COD_CLIENTE = '#39'33927658000100'#39' OR COD_CLIENTE = '#39'2558157001215' +
+        #39' OR COD_CLIENTE = '#39'33000118000500'#39' OR'#11
+      
+        'COD_CLIENTE = '#39'2558157002459'#39' OR COD_CLIENTE = '#39'28707834000150'#39' ' +
+        'OR COD_CLIENTE = '#39'11011516000158'#39' OR COD_CLIENTE = '#39'910883280013' +
+        '09'#39') AND (COD_NATUREZA_RECEITA_DESPESA = 149)'#11
+      'GROUP BY A.DATA_BAIXA)'#11
+      'GROUP BY DATA_QUITACAO')
+    Left = 928
+    Top = 432
+  end
+  object q_saida_aluguel: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_cliente'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR, COD_CLIENTE FROM CONTA_PAGAR '#11
+      ''
+      
+        'WHERE COD_CLIENTE = '#39'11234522000174'#39' AND DATA_VENCIMENTO >= :dat' +
+        'a1 AND DATA_VENCIMENTO <= :data2 AND'
+      ''
+      'COD_CLIENTE = :cod_cliente AND '#11
+      ''
+      
+        '(COD_STATUS =:cod_status1 OR COD_STATUS = :cod_status2 OR COD_ST' +
+        'ATUS = :cod_status3) '#11
+      ''
+      'GROUP BY DATA_VENCIMENTO, COD_CLIENTE)')
+    Left = 1048
+    Top = 488
+  end
+  object q_realizado_saida_aluguel: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      #11
+      #11
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      #11
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND'#11
+      '(COD_CLIENTE = '#39'11234522000174'#39')'#11
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      #11
+      'UNION ALL'#11
+      #11
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND '#11
+      '(COD_CLIENTE = '#39'11234522000174'#39') '#11
+      'GROUP BY A.DATA_BAIXA)'#11
+      'GROUP BY DATA_QUITACAO'#11)
+    Left = 1048
+    Top = 432
+  end
+  object q_saida_impostos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR FROM CONTA_PAGAR '
+      
+        'WHERE (COD_CLIENTE = '#39'394460005887'#39' OR COD_CLIENTE = '#39'1392780100' +
+        '0491'#39' OR COD_CLIENTE = '#39'360305000104'#39' OR'
+      
+        'COD_CLIENTE = '#39'13937073000156'#39' OR COD_CLIENTE = '#39'29979036000140'#39 +
+        ' OR COD_CLIENTE = '#39'13937073000318'#39' OR'
+      'COD_CLIENTE = '#39'13927801000149'#39')'
+      
+        ' AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2 AND' +
+        ' '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      
+        'AND TIPO_DOCUMENTO <> '#39'TR'#39'  AND COD_EMPRESA <> 11 AND COD_EMPRES' +
+        'A <> 7'
+      'GROUP BY DATA_VENCIMENTO)'
+      #11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      '')
+    Left = 1160
+    Top = 488
+  end
+  object q_realizado_saida_impostos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      #11
+      #11
+      #11
+      #11
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      #11
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND'#11
+      
+        '(COD_CLIENTE = '#39'394460005887'#39' OR COD_CLIENTE = '#39'13927801000491'#39' ' +
+        'OR COD_CLIENTE = '#39'360305000104'#39' OR'#11
+      
+        'COD_CLIENTE = '#39'13937073000156'#39' OR COD_CLIENTE = '#39'29979036000140'#39 +
+        ' OR COD_CLIENTE = '#39'13937073000318'#39' OR'#11
+      
+        'COD_CLIENTE = '#39'13927801000149'#39') AND (COD_NATUREZA_RECEITA_DESPES' +
+        'A = 149)'#11
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      #11
+      'UNION ALL'#11
+      #11
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND '#11
+      
+        '(COD_CLIENTE = '#39'394460005887'#39' OR COD_CLIENTE = '#39'13927801000491'#39' ' +
+        'OR COD_CLIENTE = '#39'360305000104'#39' OR'#11
+      
+        'COD_CLIENTE = '#39'13937073000156'#39' OR COD_CLIENTE = '#39'29979036000140'#39 +
+        ' OR COD_CLIENTE = '#39'13937073000318'#39' OR'#11
+      
+        'COD_CLIENTE = '#39'13927801000149'#39') AND (COD_NATUREZA_RECEITA_DESPES' +
+        'A = 149)'#11
+      'GROUP BY A.DATA_BAIXA)'#11
+      'GROUP BY DATA_QUITACAO'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      '')
+    Left = 1160
+    Top = 432
+  end
+  object q_realizado_media_saida_veiculos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR FROM CONTA_PAG' +
+        'AR '
+      
+        'WHERE (COD_NATUREZA_RECEITA_DESPESA = 143 OR COD_NATUREZA_RECEIT' +
+        'A_DESPESA = 144) AND TRUNC(DATA_QUITACAO) >= :data1 AND TRUNC(DA' +
+        'TA_QUITACAO) <= :data2  AND '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3))'
+      '')
+    Left = 800
+    Top = 560
+  end
+  object q_realizado_media_saida_semi_novos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR FROM CONTA_PAG' +
+        'AR '
+      
+        'WHERE (COD_NATUREZA_RECEITA_DESPESA = 145 OR COD_NATUREZA_RECEIT' +
+        'A_DESPESA = 146)'
+      
+        'AND TRUNC(DATA_QUITACAO) >= :data1 AND TRUNC(DATA_QUITACAO) <= :' +
+        'data2  AND '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3))'
+      '')
+    Left = 640
+    Top = 560
+  end
+  object q_historico_saida_luz: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, VALOR_PARCELA AS VALOR, C' +
+        'OD_CLIENTE FROM CONTA_PAGAR '
+      
+        'WHERE (COD_CLIENTE = '#39'15139629000194'#39' OR COD_CLIENTE = '#39'40432544' +
+        '000147'#39' OR COD_CLIENTE = '#39'13504675000110'#39' OR COD_CLIENTE = '#39'3420' +
+        '926008966'#39' OR '
+      
+        'COD_CLIENTE = '#39'7436040000120'#39' OR COD_CLIENTE = '#39'2348447000262'#39' O' +
+        'R COD_CLIENTE = '#39'33927658000100'#39' OR COD_CLIENTE = '#39'2558157001215' +
+        #39' OR COD_CLIENTE = '#39'33000118000500'#39' OR'
+      
+        'COD_CLIENTE = '#39'2558157002459'#39' OR COD_CLIENTE = '#39'28707834000150'#39' ' +
+        'OR COD_CLIENTE = '#39'11011516000158'#39' OR COD_CLIENTE = '#39'910883280013' +
+        '09'#39') '
+      ' AND DATA_QUITACAO >= :data1 AND DATA_QUITACAO <= :data2 AND '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3))'
+      '')
+    Left = 928
+    Top = 604
+  end
+  object q_realizado_media_saida_diversos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR FROM CONTA_PAG' +
+        'AR '
+      
+        'WHERE (COD_NATUREZA_RECEITA_DESPESA <> 202 AND COD_NATUREZA_RECE' +
+        'ITA_DESPESA <> 143 AND COD_NATUREZA_RECEITA_DESPESA <> 150 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 144 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 145 AND COD_NATUREZA_RECEITA_DESPESA <> 146 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 215 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 216 AND COD_NATUREZA_RECEITA_DESPESA <> 147 AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_NATUREZA_RECEITA_DESPESA <> 148 AND COD_NATUREZA_RECEITA_DES' +
+        'PESA <> 149 AND COD_NATUREZA_RECEITA_DESPESA <> 214)'
+      
+        ' AND TRUNC(DATA_QUITACAO) >= :data1 AND TRUNC(DATA_QUITACAO) <= ' +
+        ':data2 AND '
+      
+        '(COD_CLIENTE <> '#39'15139629000194'#39' AND COD_CLIENTE <> '#39'11234522000' +
+        '174'#39' AND COD_CLIENTE <> '#39'394460005887'#39' '#11
+      ''
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'13927801000491'#39' AND COD_CLIENTE <> '#39'36030500' +
+        '0104'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'13937073000156'#39' AND COD_CLIENTE <> '#39'299790360001' +
+        '40'#39' AND COD_CLIENTE <> '#39'13937073000318'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'13927801000149'#39' AND COD_CLIENTE <> '#39'404325440001' +
+        '47'#39' AND COD_CLIENTE <> '#39'13504675000110'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'3420926008966'#39' AND COD_CLIENTE <> '#39'7436040000120' +
+        #39' AND COD_CLIENTE <> '#39'2348447000262'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'33927658000100'#39' AND COD_CLIENTE <> '#39'255815700121' +
+        '5'#39' AND COD_CLIENTE <> '#39'33000118000500'#39'AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'2558157002459'#39' AND COD_CLIENTE <> '#39'2870783400015' +
+        '0'#39' AND COD_CLIENTE <> '#39'11011516000158'#39' AND'#11
+      ''
+      ''
+      ''
+      'COD_CLIENTE <> '#39'91088328001309'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE <> '#39'47193149000106'#39' AND COD_CLIENTE <> '#39'723737301426' +
+        '0'#39' AND COD_CLIENTE <> '#39'60701190000104'#39' AND COD_CLIENTE <> '#39'59275' +
+        '792008991'#39#11
+      ''
+      ''
+      ''
+      
+        'AND COD_CLIENTE <> '#39'59275792002799'#39' AND COD_CLIENTE <> '#39'23725486' +
+        '549'#39' AND COD_CLIENTE <> '#39'4141032549'#39' AND COD_CLIENTE <> '#39'2156068' +
+        '4534'#39') AND'
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3))')
+    Left = 200
+    Top = 560
+  end
+  object q_saldo_diario: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'conta1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'conta2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      ' SELECT * FROM ( SELECT SALDO_TMP_MOV AS SALDO'
+      'FROM CONTA_CORRENTE C,'
+      
+        '    (SELECT SUM(NVL(S.VALOR_CREDITO,0) - NVL(S.VALOR_DEBITO,0)) ' +
+        'AS SALDO_TMP_MOV,'
+      
+        '            SUM(DECODE(SIGN(S.DATA_FECHOU - NVL(C.DATA_SD_BCO,S.' +
+        'DATA_FECHOU-1)),1,'
+      
+        '                NVL(S.VALOR_CREDITO_BCO,0) - NVL(S.VALOR_DEBITO_' +
+        'BCO,0),0)) AS SALDO_TMP_BCO'
+      '     FROM SALDO_DIARIO S, CONTA_CORRENTE C'
+      '     WHERE S.COD_EMPRESA = C.COD_EMPRESA'
+      '       AND S.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE'
+      '       AND S.COD_CONTA_CORRENTE = :conta1'
+      '       AND S.DATA_FECHOU <= :data)'
+      'WHERE  C.COD_CONTA_CORRENTE = :conta2)')
+    Left = 360
+    Top = 144
+  end
+  object q_entradas_diaria_c: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR, TRUNC(DATA) AS DATA F' +
+        'ROM LCONTAS WHERE TRUNC(DATA) >= :data1 AND TRUNC(DATA) <= :data' +
+        '2'#11
+      ''
+      ''
+      ''
+      
+        'AND (COD_CONTA_CORRENTE = 528 OR COD_CONTA_CORRENTE = 474 OR COD' +
+        '_CONTA_CORRENTE = 480 OR COD_CONTA_CORRENTE = 501 OR COD_CONTA_C' +
+        'ORRENTE = 482 OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CONTA_CORRENTE = 526 OR COD_CONTA_CORRENTE = 538 OR COD_CONT' +
+        'A_CORRENTE = 584 OR COD_CONTA_CORRENTE = 634 OR COD_CONTA_CORREN' +
+        'TE = 633 OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CONTA_CORRENTE = 600 OR COD_CONTA_CORRENTE = 546) AND DB_CR ' +
+        '= '#39'C'#39' AND COD_ORIGEM_LANC <> 8'#11
+      ''
+      ''
+      ''
+      'GROUP BY DB_CR, TRUNC(DATA))')
+    Left = 480
+    Top = 80
+  end
+  object q_entradas_diaria_d: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR, TRUNC(DATA) AS DATA F' +
+        'ROM LCONTAS WHERE TRUNC(DATA) >= :data1 AND TRUNC(DATA) <= :data' +
+        '2'
+      
+        'AND (COD_CONTA_CORRENTE = 528 OR COD_CONTA_CORRENTE = 474 OR COD' +
+        '_CONTA_CORRENTE = 480 OR COD_CONTA_CORRENTE = 501 OR COD_CONTA_C' +
+        'ORRENTE = 482 OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CONTA_CORRENTE = 526 OR COD_CONTA_CORRENTE = 538 OR COD_CONT' +
+        'A_CORRENTE = 584 OR COD_CONTA_CORRENTE = 634 OR COD_CONTA_CORREN' +
+        'TE = 633 OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CONTA_CORRENTE = 600 OR COD_CONTA_CORRENTE = 546) AND DB_CR ' +
+        '= '#39'D'#39' AND COD_ORIGEM_LANC <> 8'#11
+      ''
+      ''
+      ''
+      'GROUP BY DB_CR, TRUNC(DATA))')
+    Left = 360
+    Top = 80
+  end
+  object q_saida_transferencias: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(A.VALOR) AS VALOR FROM LCONTAS A, TRAN' +
+        'SFERENCIA_LCONTAS B '
+      
+        'WHERE A.COD_CONTA_CORRENTE = B.CONTA_DB AND A.DATA = B.DATA_DB A' +
+        'ND A.DB_CR = '#39'D'#39' AND A.LANC = B.LANC_DB AND '
+      
+        'DATA >= :data1 AND DATA <= :data2 AND (CONTA_CR <> 528 AND CONTA' +
+        '_CR <> 474 AND CONTA_CR <> 480 AND CONTA_CR <> 501 AND CONTA_CR ' +
+        '<> 482 AND'
+      
+        'CONTA_CR <> 526 AND CONTA_CR <> 538 AND CONTA_CR <> 584 AND CONT' +
+        'A_CR <> 634 AND CONTA_CR <> 633 AND'
+      'CONTA_CR <> 600 AND CONTA_CR <> 546) AND B.COD_EMPRESA_DB = 2)')
+    Left = 1288
+    Top = 488
+  end
+  object q_realizado_saida_transferencias: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM(SELECT SUM(A.VALOR) AS VALOR, A.DATA FROM LCONTAS ' +
+        'A, TRANSFERENCIA_LCONTAS B '#11
+      
+        'WHERE A.COD_CONTA_CORRENTE = B.CONTA_DB AND A.DATA = B.DATA_DB A' +
+        'ND A.DB_CR = '#39'D'#39' AND A.LANC = B.LANC_DB AND '#11
+      
+        'A.DATA >= :data1 AND A.DATA <= :data2 AND (CONTA_CR <> 528 AND C' +
+        'ONTA_CR <> 474 AND CONTA_CR <> 480 AND CONTA_CR <> 501 AND CONTA' +
+        '_CR <> 482 AND'#11
+      
+        'CONTA_CR <> 526 AND CONTA_CR <> 538 AND CONTA_CR <> 584 AND CONT' +
+        'A_CR <> 634 AND CONTA_CR <> 633 AND'#11
+      'CONTA_CR <> 600 AND CONTA_CR <> 546) AND '#11
+      
+        '(CONTA_DB = 528 OR CONTA_DB = 474 OR CONTA_DB = 480 OR CONTA_DB ' +
+        '= 501 OR CONTA_DB = 482 OR'#11
+      
+        'CONTA_DB = 526 OR CONTA_DB = 538 OR CONTA_DB = 584 OR CONTA_DB =' +
+        ' 634 OR CONTA_DB = 633 OR'#11
+      'CONTA_DB = 600 OR CONTA_DB = 546)'#11
+      'AND B.COD_EMPRESA_DB = 2'#11
+      'GROUP BY (A.DATA) ORDER BY A.DATA)')
+    Left = 1288
+    Top = 432
+  end
+  object q_entradas_transferencias: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR FROM LCONTAS A, TRANSF' +
+        'ERENCIA_LCONTAS B '#11
+      ''
+      ''
+      
+        'WHERE A.COD_CONTA_CORRENTE = B.CONTA_CR AND A.DATA = B.DATA_CR A' +
+        'ND A.DB_CR = '#39'C'#39' AND A.LANC = B.LANC_CR AND '#11
+      ''
+      ''
+      
+        'DATA >= :data1 AND DATA <= :data2 AND (CONTA_DB <> 528 AND CONTA' +
+        '_DB <> 474 AND CONTA_DB <> 480 AND CONTA_DB <> 501 AND CONTA_DB ' +
+        '<> 482 AND'#11
+      ''
+      ''
+      
+        'CONTA_DB <> 526 AND CONTA_DB <> 538 AND CONTA_DB <> 584 AND CONT' +
+        'A_DB <> 634 AND CONTA_DB <> 633 AND'#11
+      ''
+      ''
+      'CONTA_DB <> 600 AND CONTA_DB <> 546) AND B.COD_EMPRESA = 2)')
+    Left = 1000
+    Top = 184
+  end
+  object q_realizado_entradas_transferencias: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR, A.DATA FROM LCONTAS A' +
+        ', TRANSFERENCIA_LCONTAS B '#11
+      
+        'WHERE A.COD_CONTA_CORRENTE = B.CONTA_CR AND A.DATA = B.DATA_CR A' +
+        'ND A.DB_CR = '#39'C'#39' AND A.LANC = B.LANC_CR AND '#11
+      
+        'DATA >= :data1 AND DATA <= :data2 AND (CONTA_DB <> 528 AND CONTA' +
+        '_DB <> 474 AND CONTA_DB <> 480 AND CONTA_DB <> 501 AND CONTA_DB ' +
+        '<> 482 AND'#11
+      
+        'CONTA_DB <> 526 AND CONTA_DB <> 538 AND CONTA_DB <> 584 AND CONT' +
+        'A_DB <> 634 AND CONTA_DB <> 633 AND'#11
+      'CONTA_DB <> 600 AND CONTA_DB <> 546) AND'#11
+      
+        '(CONTA_CR = 528 OR CONTA_CR = 474 OR CONTA_CR = 480 OR CONTA_CR ' +
+        '= 501 OR CONTA_CR = 482 OR'#11
+      
+        'CONTA_CR = 526 OR CONTA_CR = 538 OR CONTA_CR = 584 OR CONTA_CR =' +
+        ' 634 OR CONTA_CR = 633 OR'#11
+      'CONTA_CR = 600 OR CONTA_CR = 546)'#11
+      'AND B.COD_EMPRESA = 2 GROUP BY A.DATA) ')
+    Left = 760
+    Top = 176
+  end
+  object q_realizado_saida_outros: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data5'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data6'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      ''
+      ''
+      ''
+      
+        '(SELECT SUM(-A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS' +
+        ' DATA_QUITACAO'#11
+      ''
+      ''
+      ''
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      ''
+      ''
+      ''
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      ''
+      ''
+      ''
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      ''
+      ''
+      ''
+      'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546)'#11
+      ''
+      ''
+      ''
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT SUM(-A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITA' +
+        'CAO'#11
+      ''
+      ''
+      ''
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      ''
+      ''
+      ''
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      ''
+      ''
+      ''
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      ''
+      ''
+      ''
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      ''
+      ''
+      ''
+      'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546)'#11
+      ''
+      ''
+      ''
+      'GROUP BY A.DATA_BAIXA'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR, TRUNC(DATA) AS DATA_Q' +
+        'UITACAO FROM LCONTAS WHERE TRUNC(DATA) >= :data5 AND TRUNC(DATA)' +
+        ' <= :data6'#11
+      ''
+      ''
+      ''
+      
+        'AND (COD_CONTA_CORRENTE = 528 OR COD_CONTA_CORRENTE = 474 OR COD' +
+        '_CONTA_CORRENTE = 480 OR COD_CONTA_CORRENTE = 501 OR COD_CONTA_C' +
+        'ORRENTE = 482 OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CONTA_CORRENTE = 526 OR COD_CONTA_CORRENTE = 538 OR COD_CONT' +
+        'A_CORRENTE = 584 OR COD_CONTA_CORRENTE = 634 OR COD_CONTA_CORREN' +
+        'TE = 633 OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CONTA_CORRENTE = 600 OR COD_CONTA_CORRENTE = 546) AND DB_CR ' +
+        '= '#39'D'#39' AND COD_ORIGEM_LANC <> 8'#11
+      ''
+      'GROUP BY DB_CR, TRUNC(DATA)))'
+      'GROUP BY DATA_QUITACAO')
+    Left = 1416
+    Top = 488
+  end
+  object q_historico_saida_aluguel: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, VALOR_PARCELA AS VALOR, C' +
+        'OD_CLIENTE FROM CONTA_PAGAR '
+      
+        'WHERE COD_CLIENTE = '#39'11234522000174'#39' AND DATA_VENCIMENTO >= :dat' +
+        'a1 AND DATA_VENCIMENTO <= :data2 AND'
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3))')
+    Left = 1056
+    Top = 560
+  end
+  object q_saida_emprestimos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR FROM CONTA_PAGAR '
+      
+        'WHERE (COD_CLIENTE = '#39'47193149000106'#39' OR COD_CLIENTE = '#39'72373730' +
+        '14260'#39' OR COD_CLIENTE = '#39'60701190000104'#39')'
+      
+        ' AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2 AND' +
+        ' '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      'AND TIPO_DOCUMENTO <> '#39'TR'#39#11
+      ''
+      'GROUP BY DATA_VENCIMENTO)'
+      ''
+      #11
+      ''
+      #11
+      '')
+    Left = 1536
+    Top = 488
+  end
+  object q_realizado_saida_emprestimos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      ''
+      ''
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'
+      'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND'
+      
+        '(COD_CLIENTE = '#39'47193149000106'#39' OR COD_CLIENTE = '#39'7237373014260'#39 +
+        ' OR COD_CLIENTE = '#39'60701190000104'#39')'
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND '
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'
+      'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND '
+      
+        '(COD_CLIENTE = '#39'47193149000106'#39' OR COD_CLIENTE = '#39'7237373014260'#39 +
+        ' OR COD_CLIENTE = '#39'60701190000104'#39')'
+      'GROUP BY A.DATA_BAIXA)'#11
+      ''
+      ''
+      'GROUP BY DATA_QUITACAO'
+      ''
+      '')
+    Left = 1536
+    Top = 432
+  end
+  object q_historico_saida_emprestimos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, VALOR_PARCELA AS VALOR, C' +
+        'OD_CLIENTE FROM CONTA_PAGAR '
+      
+        'WHERE (COD_CLIENTE = '#39'47193149000106'#39' OR COD_CLIENTE = '#39'72373730' +
+        '14260'#39' OR COD_CLIENTE = '#39'60701190000104'#39')'
+      'AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2 AND'
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3))'
+      ''
+      #11
+      ''
+      ''
+      #11
+      ''
+      '')
+    Left = 1536
+    Top = 544
+  end
+  object q_realizado_saida_pecas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      ''
+      ''
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'
+      'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND'
+      
+        '(COD_CLIENTE = '#39'59275792008991'#39' OR COD_CLIENTE = '#39'59275792002799' +
+        #39')'
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      #11
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND '
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'
+      'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND '
+      
+        '(COD_CLIENTE = '#39'59275792008991'#39' OR COD_CLIENTE = '#39'59275792002799' +
+        #39') '
+      'GROUP BY A.DATA_BAIXA)'#11
+      ''
+      ''
+      'GROUP BY DATA_QUITACAO'
+      ''
+      '')
+    Left = 1672
+    Top = 432
+  end
+  object q_saida_pecas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR FROM CONTA_PAGAR '
+      
+        'WHERE (COD_CLIENTE = '#39'59275792008991'#39' OR COD_CLIENTE = '#39'59275792' +
+        '002799'#39')'
+      
+        ' AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2 AND' +
+        ' '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      'AND TIPO_DOCUMENTO <> '#39'TR'#39
+      'GROUP BY DATA_VENCIMENTO)'
+      ''
+      #11
+      ''
+      ''
+      #11
+      ''
+      '')
+    Left = 1672
+    Top = 488
+  end
+  object q_historico_saida_pecas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, VALOR_PARCELA AS VALOR, C' +
+        'OD_CLIENTE FROM CONTA_PAGAR '
+      
+        'WHERE (COD_CLIENTE = '#39'59275792008991'#39' OR COD_CLIENTE = '#39'59275792' +
+        '002799'#39')'
+      'AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2 AND'
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3))'
+      ''
+      #11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      '')
+    Left = 1672
+    Top = 544
+  end
+  object q_historico_saida_salarios: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, VALOR_PARCELA AS VALOR, C' +
+        'OD_CLIENTE FROM CONTA_PAGAR '
+      
+        'WHERE (COD_NATUREZA_RECEITA_DESPESA = 215) AND TRUNC(DATA_QUITAC' +
+        'AO) >= :data1 AND TRUNC(DATA_QUITACAO) <= :data2  AND '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3))')
+    Left = 1792
+    Top = 560
+  end
+  object q_saida_salarios: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR, DATA_VENCIMEN' +
+        'TO, COD_CLIENTE FROM CONTA_PAGAR '
+      'WHERE (COD_NATUREZA_RECEITA_DESPESA = 215)'
+      
+        ' AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2  AN' +
+        'D '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      'AND TIPO_DOCUMENTO <> '#39'TR'#39
+      'GROUP BY DATA_VENCIMENTO, COD_CLIENTE)')
+    Left = 1792
+    Top = 496
+  end
+  object q_realizado_saida_salarios: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      ''
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'
+      
+        'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND (B' +
+        '.COD_NATUREZA_RECEITA_DESPESA = 215)'
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND '
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      ''
+      ''
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'
+      
+        'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND (B.COD_N' +
+        'ATUREZA_RECEITA_DESPESA = 215)'
+      'GROUP BY A.DATA_BAIXA)'
+      'GROUP BY DATA_QUITACAO')
+    Left = 1792
+    Top = 432
+  end
+  object q_saida_rescisao: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR_PARCELA) AS VALOR, DATA_VENCIMEN' +
+        'TO FROM CONTA_PAGAR '#11
+      ''
+      ''
+      ''
+      
+        'WHERE COD_NATUREZA_RECEITA_DESPESA = 216 AND DATA_VENCIMENTO >= ' +
+        ':data1 AND DATA_VENCIMENTO <= :data2 AND '#11
+      ''
+      ''
+      ''
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'#11
+      ''
+      'AND TIPO_DOCUMENTO <> '#39'TR'#39#11
+      ''
+      ''
+      'GROUP BY DATA_VENCIMENTO)')
+    Left = 1928
+    Top = 496
+  end
+  object q_realizado_saida_rescisao: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      ''
+      #11
+      ''
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ''
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      ''
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      ''
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      ''
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND (B' +
+        '.COD_NATUREZA_RECEITA_DESPESA = 216)'#11
+      ''
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      #11
+      ''
+      'UNION ALL'#11
+      ''
+      #11
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      ''
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      ''
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      ''
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      ''
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      ''
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      ''
+      
+        'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND (B.COD_N' +
+        'ATUREZA_RECEITA_DESPESA = 216)'#11
+      ''
+      'GROUP BY A.DATA_BAIXA)'#11
+      ''
+      'GROUP BY DATA_QUITACAO')
+    Left = 1928
+    Top = 432
+  end
+  object q_saida_luz2: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR, COD_CLIENTE FROM CONTA_PAGAR '
+      
+        'WHERE (COD_CLIENTE = '#39'15139629000194'#39' OR COD_CLIENTE = '#39'40432544' +
+        '000147'#39' OR COD_CLIENTE = '#39'13504675000110'#39' OR COD_CLIENTE = '#39'3420' +
+        '926008966'#39' OR '
+      
+        'COD_CLIENTE = '#39'7436040000120'#39' OR COD_CLIENTE = '#39'2348447000262'#39' O' +
+        'R COD_CLIENTE = '#39'33927658000100'#39' OR COD_CLIENTE = '#39'2558157001215' +
+        #39' OR COD_CLIENTE = '#39'33000118000500'#39' OR'
+      
+        'COD_CLIENTE = '#39'2558157002459'#39' OR COD_CLIENTE = '#39'28707834000150'#39' ' +
+        'OR COD_CLIENTE = '#39'11011516000158'#39' OR COD_CLIENTE = '#39'910883280013' +
+        '09'#39') '
+      'AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2  AND'
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      'GROUP BY DATA_VENCIMENTO, COD_CLIENTE)')
+    Left = 928
+    Top = 552
+  end
+  object q_saida_socios: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'cod_status3'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT DATA_VENCIMENTO, SUM(VALOR_PARCELA) AS VAL' +
+        'OR FROM CONTA_PAGAR '
+      
+        'WHERE (COD_CLIENTE = '#39'23725486549'#39' OR COD_CLIENTE = '#39'4141032549'#39 +
+        ' OR COD_CLIENTE = '#39'21560684534'#39')'
+      
+        ' AND DATA_VENCIMENTO >= :data1 AND DATA_VENCIMENTO <= :data2 AND' +
+        ' '
+      
+        '(COD_STATUS = :cod_status1 OR COD_STATUS = :cod_status2 OR COD_S' +
+        'TATUS = :cod_status3)'
+      
+        'AND TIPO_DOCUMENTO <> '#39'TR'#39'  AND COD_EMPRESA <> 11 AND COD_EMPRES' +
+        'A <> 7'
+      'GROUP BY DATA_VENCIMENTO)'
+      #11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      '')
+    Left = 2048
+    Top = 496
+  end
+  object q_realizado_saida_socios: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data3'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data4'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      #11
+      ''
+      ''
+      #11
+      ''
+      ''
+      #11
+      ''
+      ''
+      #11
+      ''
+      ''
+      'SELECT SUM(VALOR) AS VALOR, DATA_QUITACAO FROM'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      
+        '(SELECT SUM(A.VALOR_PRINCIPAL) AS VALOR, TRUNC(A.DATA_BAIXA) AS ' +
+        'DATA_QUITACAO'#11
+      ''
+      ''
+      ' FROM BAIXA_CONTA_PAGAR A, CONTA_PAGAR B '#11
+      ''
+      ''
+      
+        'WHERE TRUNC(A.DATA_BAIXA) >= :data1 AND TRUNC(A.DATA_BAIXA) <= :' +
+        'data2 AND'#11
+      ''
+      ''
+      
+        'A.COD_EMPRESA = B.COD_EMPRESA AND A.ANO_PPAG = B.ANO_PPAG AND A.' +
+        'LANCAMENTO = B.LANCAMENTO AND A.PARCELA = B.PARCELA AND A.PARCIA' +
+        'L = B.PARCIAL AND'#11
+      ''
+      ''
+      
+        '(A.COD_CONTA_CORRENTE = 528 OR A.COD_CONTA_CORRENTE = 474 OR A.C' +
+        'OD_CONTA_CORRENTE = 480 OR A.COD_CONTA_CORRENTE = 501 OR A.COD_C' +
+        'ONTA_CORRENTE = 482 OR'#11
+      ''
+      ''
+      
+        'A.COD_CONTA_CORRENTE = 526 OR A.COD_CONTA_CORRENTE = 538 OR A.CO' +
+        'D_CONTA_CORRENTE = 584 OR A.COD_CONTA_CORRENTE = 634 OR A.COD_CO' +
+        'NTA_CORRENTE = 633 OR'#11
+      ''
+      ''
+      'A.COD_CONTA_CORRENTE = 600 OR A.COD_CONTA_CORRENTE = 546) AND'#11
+      ''
+      ''
+      
+        '(COD_CLIENTE = '#39'23725486549'#39' OR COD_CLIENTE = '#39'4141032549'#39' OR CO' +
+        'D_CLIENTE = '#39'21560684534'#39') AND (COD_NATUREZA_RECEITA_DESPESA = 1' +
+        '49)'#11
+      ''
+      ''
+      'GROUP BY TRUNC(A.DATA_BAIXA)'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      
+        'SELECT SUM(A.VALOR) AS VALOR, TRUNC(A.DATA_BAIXA) AS DATA_QUITAC' +
+        'AO'#11
+      ''
+      ''
+      
+        'FROM BAIXA_ADIANTAMENTO A, ADIANTAMENTO B WHERE A.DATA_BAIXA >= ' +
+        ':data3 AND A.DATA_BAIXA <= :data4 AND'#11
+      ''
+      ''
+      
+        'A.TIPO_ADIANTAMENTO = B.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = B.' +
+        'COD_EMPRESA AND A.COD_CONTA_CORRENTE = B.COD_CONTA_CORRENTE AND ' +
+        #11
+      ''
+      ''
+      'A.DATA = B.DATA AND A.LANC = B.LANC AND'#11
+      ''
+      ''
+      
+        '(A.COD_CONTA_BAIXA = 528 OR A.COD_CONTA_BAIXA = 474 OR A.COD_CON' +
+        'TA_BAIXA = 480 OR A.COD_CONTA_BAIXA = 501 OR A.COD_CONTA_BAIXA =' +
+        ' 482 OR'#11
+      ''
+      ''
+      
+        'A.COD_CONTA_BAIXA = 526 OR A.COD_CONTA_BAIXA = 538 OR A.COD_CONT' +
+        'A_BAIXA = 584 OR A.COD_CONTA_BAIXA = 634 OR A.COD_CONTA_BAIXA = ' +
+        '633 OR'#11
+      ''
+      ''
+      'A.COD_CONTA_BAIXA = 600 OR A.COD_CONTA_BAIXA = 546) AND '#11
+      ''
+      ''
+      
+        '(COD_CLIENTE = '#39'23725486549'#39' OR COD_CLIENTE = '#39'4141032549'#39' OR CO' +
+        'D_CLIENTE = '#39'21560684534'#39') AND (COD_NATUREZA_RECEITA_DESPESA = 1' +
+        '49)'#11
+      ''
+      ''
+      'GROUP BY A.DATA_BAIXA)'#11
+      ''
+      ''
+      'GROUP BY DATA_QUITACAO'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      ''
+      ''
+      '')
+    Left = 2048
+    Top = 432
+  end
+  object q_entradas_bancos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      #11
+      ''
+      ''
+      'SELECT * FROM('#11
+      ''
+      ''
+      
+        'SELECT COD_CONTA_CORRENTE, COD_ORIGEM_LANC, SUM(VALOR) AS VALOR ' +
+        'FROM LCONTAS '#11
+      ''
+      ''
+      'WHERE TRUNC(DATA) = :data AND DB_CR = '#39'C'#39' '
+      ''
+      ''
+      'GROUP BY (COD_CONTA_CORRENTE, COD_ORIGEM_LANC))')
+    Left = 1472
+    Top = 40
+  end
+  object q_entradas_cartao: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT *  FROM ('
+      
+        'SELECT CONTA_BAIXA, (SUM(VALOR) - SUM(VALOR_DESPESA)) AS VALOR F' +
+        'ROM CRECEBER_CARTAO_PARC WHERE DATA_BAIXA = :data GROUP BY (CONT' +
+        'A_BAIXA))')
+    Left = 1256
+    Top = 64
+  end
+  object q_entradas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      #11
+      ''
+      ''
+      ''
+      'SELECT * FROM('#11
+      ''
+      ''
+      ''
+      
+        'SELECT COD_CONTA_CORRENTE, COD_ORIGEM_LANC, SUM(VALOR) AS VALOR ' +
+        'FROM LCONTAS '#11
+      ''
+      ''
+      ''
+      'WHERE TRUNC(DATA) = :data AND DB_CR = '#39'C'#39' '
+      ''
+      'AND (COD_ORIGEM_LANC <> 35 AND COD_ORIGEM_LANC <> 8) '
+      ''
+      'GROUP BY (COD_CONTA_CORRENTE, COD_ORIGEM_LANC))')
+    Left = 1480
+    Top = 104
+  end
+  object q_entradas_bancos_transferencias: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'conta'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR, A.DATA FROM LCONTAS A' +
+        ', TRANSFERENCIA_LCONTAS B '#11
+      
+        'WHERE A.COD_CONTA_CORRENTE = B.CONTA_CR AND A.DATA = B.DATA_CR A' +
+        'ND A.DB_CR = '#39'C'#39' AND A.LANC = B.LANC_CR AND '#11
+      
+        'DATA = :data AND (CONTA_DB <> 528 AND CONTA_DB <> 474 AND CONTA_' +
+        'DB <> 480 AND CONTA_DB <> 501 AND CONTA_DB <> 482 AND'#11
+      
+        'CONTA_DB <> 526 AND CONTA_DB <> 538 AND CONTA_DB <> 584 AND CONT' +
+        'A_DB <> 634 AND CONTA_DB <> 633 AND'#11
+      'CONTA_DB <> 600 AND CONTA_DB <> 546) AND'#11
+      '(CONTA_CR = :conta)'#11
+      'AND B.COD_EMPRESA = 2 GROUP BY A.DATA) ')
+    Left = 1904
+    Top = 120
+  end
+  object q_saidas_bancos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT * FROM('#11
+      
+        'SELECT COD_CONTA_CORRENTE, COD_ORIGEM_LANC, SUM(VALOR) AS VALOR ' +
+        'FROM LCONTAS '#11
+      'WHERE TRUNC(DATA) = :data AND DB_CR = '#39'D'#39' '#11
+      '--AND (COD_ORIGEM_LANC <> 35 AND COD_ORIGEM_LANC <> 8) '#11
+      'GROUP BY (COD_CONTA_CORRENTE, COD_ORIGEM_LANC))')
+    Left = 1368
+    Top = 56
+  end
+  object q_saidas_bancos_transferencias: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'conta'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR, A.DATA FROM LCONTAS A' +
+        ', TRANSFERENCIA_LCONTAS B '
+      
+        'WHERE A.COD_CONTA_CORRENTE = B.CONTA_DB AND A.DATA = B.DATA_DB A' +
+        'ND A.DB_CR = '#39'D'#39' AND A.LANC = B.LANC_DB AND '
+      
+        'DATA = :data AND (CONTA_CR <> 528 AND CONTA_CR <> 474 AND CONTA_' +
+        'CR <> 480 AND CONTA_CR <> 501 AND CONTA_CR <> 482 AND'
+      
+        'CONTA_CR <> 526 AND CONTA_CR <> 538 AND CONTA_CR <> 584 AND CONT' +
+        'A_CR <> 634 AND CONTA_CR <> 633 AND'
+      'CONTA_CR <> 600 AND CONTA_CR <> 546) AND'
+      '(CONTA_DB = :conta)'
+      'AND B.COD_EMPRESA = 2 GROUP BY A.DATA) ')
+    Left = 1720
+    Top = 112
+  end
+  object q_saidas_bancos_transferencias2: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'conta'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR, A.DATA FROM LCONTAS A' +
+        ', TRANSFERENCIA_LCONTAS B '
+      
+        'WHERE A.COD_CONTA_CORRENTE = B.CONTA_DB AND A.DATA = B.DATA_DB A' +
+        'ND A.DB_CR = '#39'D'#39' AND A.LANC = B.LANC_DB AND '
+      
+        'DATA = :data AND (CONTA_CR = 528 OR CONTA_CR = 474 OR CONTA_CR =' +
+        ' 480 OR CONTA_CR = 501 OR CONTA_CR = 482 OR'
+      
+        'CONTA_CR = 526 OR CONTA_CR = 538 OR CONTA_CR = 584 OR CONTA_CR =' +
+        ' 634 OR CONTA_CR = 633 OR'
+      'CONTA_CR = 600 OR CONTA_CR = 546) AND'
+      '(CONTA_DB = :conta)'
+      'AND B.COD_EMPRESA = 2 GROUP BY A.DATA) ')
+    Left = 1712
+    Top = 48
+  end
+  object q_saidas_bancos_semi_novos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      ''
+      
+        '(C.COD_NATUREZA_RECEITA_DESPESA = 145 OR C.COD_NATUREZA_RECEITA_' +
+        'DESPESA = 146)'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND'#11
+      ''
+      ''
+      ''
+      
+        '(C.COD_NATUREZA_RECEITA_DESPESA = 145 OR C.COD_NATUREZA_RECEITA_' +
+        'DESPESA = 146) '#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 2224
+    Top = 120
+  end
+  object q_saidas_bancos_salarios: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      '(C.COD_NATUREZA_RECEITA_DESPESA = 215)'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND'#11
+      ''
+      ''
+      '(C.COD_NATUREZA_RECEITA_DESPESA = 215) '#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 1768
+    Top = 232
+  end
+  object q_saidas_bancos_aluguel: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      '(COD_CLIENTE = '#39'11234522000174'#39')'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND'#11
+      ''
+      ''
+      '(COD_CLIENTE = '#39'11234522000174'#39') '#11
+      ''
+      ''
+      #11
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 1904
+    Top = 232
+  end
+  object q_saidas_bancos_imposto: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE = '#39'394460005887'#39' OR COD_CLIENTE = '#39'13927801000491'#39' ' +
+        'OR COD_CLIENTE = '#39'360305000104'#39' OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE = '#39'13937073000156'#39' OR COD_CLIENTE = '#39'29979036000140'#39 +
+        ' OR COD_CLIENTE = '#39'13937073000318'#39' OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE = '#39'13927801000149'#39') AND (C.COD_NATUREZA_RECEITA_DESP' +
+        'ESA = 149)'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND'#11
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE = '#39'394460005887'#39' OR COD_CLIENTE = '#39'13927801000491'#39' ' +
+        'OR COD_CLIENTE = '#39'360305000104'#39' OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE = '#39'13937073000156'#39' OR COD_CLIENTE = '#39'29979036000140'#39 +
+        ' OR COD_CLIENTE = '#39'13937073000318'#39' OR'#11
+      ''
+      ''
+      ''
+      
+        'COD_CLIENTE = '#39'13927801000149'#39') AND (C.COD_NATUREZA_RECEITA_DESP' +
+        'ESA = 149)'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 2056
+    Top = 184
+  end
+  object q_saidas_bancos_veiculos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(C.COD_NATUREZA_RECEITA_DESPESA = 143 OR C.COD_NATUREZA_RECEITA_' +
+        'DESPESA = 144)'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND '#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(C.COD_NATUREZA_RECEITA_DESPESA = 143 OR C.COD_NATUREZA_RECEITA_' +
+        'DESPESA = 144)'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 2056
+    Top = 120
+  end
+  object q_saidas_bancos_venda_direta: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      ''
+      '(C.COD_NATUREZA_RECEITA_DESPESA = 200)'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND '#11
+      ''
+      ''
+      ''
+      '(C.COD_NATUREZA_RECEITA_DESPESA = 200)'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 2224
+    Top = 184
+  end
+  object q_saidas_bancos_acionistas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE = '#39'23725486549'#39' OR COD_CLIENTE = '#39'21560684534'#39' OR C' +
+        'OD_CLIENTE = '#39'4141032549'#39') AND (C.COD_NATUREZA_RECEITA_DESPESA =' +
+        ' 149)'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND '#11
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE = '#39'23725486549'#39' OR COD_CLIENTE = '#39'21560684534'#39' OR C' +
+        'OD_CLIENTE = '#39'4141032549'#39') AND (C.COD_NATUREZA_RECEITA_DESPESA =' +
+        ' 149)'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE '#11
+      ''
+      ''
+      '')
+    Left = 2224
+    Top = 56
+  end
+  object q_saidas_bancos_seguro: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE = '#39'33041062000958'#39' OR COD_CLIENTE = '#39'61100145000159' +
+        #39') AND (C.COD_NATUREZA_RECEITA_DESPESA = 149)'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND '#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE = '#39'33041062000958'#39' OR COD_CLIENTE = '#39'61100145000159' +
+        #39') AND (C.COD_NATUREZA_RECEITA_DESPESA = 149)'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 2056
+    Top = 56
+  end
+  object q_saidas_bancos_consorcio: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(C.COD_NATUREZA_RECEITA_DESPESA = 202 OR C.COD_NATUREZA_RECEITA_' +
+        'DESPESA = 203)'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data2) AND '#11
+      ''
+      ''
+      ''
+      ''
+      
+        '(C.COD_NATUREZA_RECEITA_DESPESA = 202 OR C.COD_NATUREZA_RECEITA_' +
+        'DESPESA = 203)'#11
+      ''
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 2224
+    Top = 240
+  end
+  object q_entradas_bancos_transferencias2: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'conta'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR, A.DATA FROM LCONTAS A' +
+        ', TRANSFERENCIA_LCONTAS B '
+      
+        'WHERE A.COD_CONTA_CORRENTE = B.CONTA_CR AND A.DATA = B.DATA_CR A' +
+        'ND A.DB_CR = '#39'C'#39' AND A.LANC = B.LANC_CR AND '
+      
+        'DATA = :data AND (CONTA_DB = 528 OR CONTA_DB = 474 OR CONTA_DB =' +
+        ' 480 OR CONTA_DB = 501 OR CONTA_DB = 482 OR'
+      
+        'CONTA_DB = 526 OR CONTA_DB = 538 OR CONTA_DB = 584 OR CONTA_DB =' +
+        ' 634 OR CONTA_DB = 633 OR'
+      'CONTA_DB = 600 OR CONTA_DB = 546) AND'
+      '(CONTA_CR = :conta)'
+      'AND B.COD_EMPRESA = 2 GROUP BY A.DATA) ')
+    Left = 1904
+    Top = 48
+  end
+  object q_saidas_bancos_fornecedor: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) = :data1) AND'#11
+      ''
+      ''
+      ''
+      
+        '(C.COD_NATUREZA_RECEITA_DESPESA = 147 OR C.COD_NATUREZA_RECEITA_' +
+        'DESPESA = 148 OR C.COD_NATUREZA_RECEITA_DESPESA = 149 OR C.COD_N' +
+        'ATUREZA_RECEITA_DESPESA = 214 '#11
+      ''
+      ''
+      ''
+      ' OR C.COD_NATUREZA_RECEITA_DESPESA = 150)'#11
+      ''
+      ''
+      ''
+      ' AND'#11
+      ''
+      ''
+      ''
+      
+        '(C.COD_CLIENTE <> '#39'23725486549'#39' AND C.COD_CLIENTE <> '#39'4141032549' +
+        #39' AND C.COD_CLIENTE <> '#39'21560684534'#39' AND C.COD_CLIENTE <> '#39'39446' +
+        '0005887'#39' AND C.COD_CLIENTE <> '#39'13927801000491'#39' AND '#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'360305000104'#39' AND C.COD_CLIENTE <> '#39'1393707300' +
+        '0156'#39' AND C.COD_CLIENTE <> '#39'29979036000140'#39' AND C.COD_CLIENTE <>' +
+        ' '#39'13937073000318'#39' AND C.COD_CLIENTE <> '#39'13927801000149'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'47193149000106'#39' AND C.COD_CLIENTE <> '#39'72373730' +
+        '14260'#39' AND C.COD_CLIENTE <> '#39'60701190000104'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'15139629000194'#39' AND C.COD_CLIENTE <> '#39'40432544' +
+        '000147'#39' AND C.COD_CLIENTE <> '#39'13504675000110'#39' AND C.COD_CLIENTE ' +
+        '<> '#39'3420926008966'#39' AND '#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'7436040000120'#39' AND C.COD_CLIENTE <> '#39'234844700' +
+        '0262'#39' AND C.COD_CLIENTE <> '#39'33927658000100'#39' AND C.COD_CLIENTE <>' +
+        ' '#39'2558157001215'#39' AND C.COD_CLIENTE <> '#39'33000118000500'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'2558157002459'#39' AND C.COD_CLIENTE <> '#39'287078340' +
+        '00150'#39' AND C.COD_CLIENTE <> '#39'11011516000158'#39' AND C.COD_CLIENTE <' +
+        '> '#39'91088328001309'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'59275792008991'#39' AND C.COD_CLIENTE <> '#39'59275792' +
+        '002799'#39')'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND '#11
+      ''
+      ''
+      ''
+      
+        '(C.COD_NATUREZA_RECEITA_DESPESA = 147 OR C.COD_NATUREZA_RECEITA_' +
+        'DESPESA = 148 OR C.COD_NATUREZA_RECEITA_DESPESA = 149 OR C.COD_N' +
+        'ATUREZA_RECEITA_DESPESA = 214 '#11
+      ''
+      ''
+      ''
+      ' OR C.COD_NATUREZA_RECEITA_DESPESA = 150)'#11
+      ''
+      ''
+      ''
+      ' AND'#11
+      ''
+      ''
+      ''
+      
+        '(C.COD_CLIENTE <> '#39'23725486549'#39' AND C.COD_CLIENTE <> '#39'4141032549' +
+        #39' AND C.COD_CLIENTE <> '#39'21560684534'#39' AND C.COD_CLIENTE <> '#39'39446' +
+        '0005887'#39' AND C.COD_CLIENTE <> '#39'13927801000491'#39' AND '#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'360305000104'#39' AND C.COD_CLIENTE <> '#39'1393707300' +
+        '0156'#39' AND C.COD_CLIENTE <> '#39'29979036000140'#39' AND C.COD_CLIENTE <>' +
+        ' '#39'13937073000318'#39' AND C.COD_CLIENTE <> '#39'13927801000149'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'47193149000106'#39' AND C.COD_CLIENTE <> '#39'72373730' +
+        '14260'#39' AND C.COD_CLIENTE <> '#39'60701190000104'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'15139629000194'#39' AND C.COD_CLIENTE <> '#39'40432544' +
+        '000147'#39' AND C.COD_CLIENTE <> '#39'13504675000110'#39' AND C.COD_CLIENTE ' +
+        '<> '#39'3420926008966'#39' AND '#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'7436040000120'#39' AND C.COD_CLIENTE <> '#39'234844700' +
+        '0262'#39' AND C.COD_CLIENTE <> '#39'33927658000100'#39' AND C.COD_CLIENTE <>' +
+        ' '#39'2558157001215'#39' AND C.COD_CLIENTE <> '#39'33000118000500'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'2558157002459'#39' AND C.COD_CLIENTE <> '#39'287078340' +
+        '00150'#39' AND C.COD_CLIENTE <> '#39'11011516000158'#39' AND C.COD_CLIENTE <' +
+        '> '#39'91088328001309'#39' AND'#11
+      ''
+      ''
+      ''
+      
+        'C.COD_CLIENTE <> '#39'59275792008991'#39' AND C.COD_CLIENTE <> '#39'59275792' +
+        '002799'#39')'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 1632
+    Top = 232
+  end
+  object q_saidas_bancos_pecas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE FROM ('#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR_PRINCIPAL AS VALOR, A.COD_CONTA_CORRENTE FROM BAI' +
+        'XA_CONTA_PAGAR A, LCONTAS B, CONTA_PAGAR C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.COD_EMPRESA = C.COD_EMPRESA AND A.ANO_PPAG = C.ANO_PPAG AND A' +
+        '.LANCAMENTO = C.LANCAMENTO AND A.PARCELA = C.PARCELA AND A.PARCI' +
+        'AL = C.PARCIAL) AND'#11
+      ''
+      ''
+      ''
+      
+        '(TRUNC(A.DATA_BAIXA) = :data1) AND (COD_CLIENTE = '#39'5927579200899' +
+        '1'#39' OR COD_CLIENTE = '#39'59275792002799'#39')'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      'UNION ALL'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      
+        'SELECT A.VALOR, A.COD_CONTA_BAIXA AS COD_CONTA_CORRENTE FROM BAI' +
+        'XA_ADIANTAMENTO A, LCONTAS B, ADIANTAMENTO C'#11
+      ''
+      ''
+      ''
+      
+        'WHERE (A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_CONTA_CORRENTE = ' +
+        'B.COD_CONTA_CORRENTE AND A.LANC = B.LANC AND A.DATA = B.DATA) AN' +
+        'D'#11
+      ''
+      ''
+      ''
+      
+        '(A.TIPO_ADIANTAMENTO = C.TIPO_ADIANTAMENTO AND A.COD_EMPRESA = C' +
+        '.COD_EMPRESA AND A.COD_CONTA_CORRENTE = C.COD_CONTA_CORRENTE AND' +
+        ' '#11
+      ''
+      ''
+      ''
+      'A.DATA = C.DATA AND A.LANC = C.LANC) AND'#11
+      ''
+      ''
+      ''
+      '(TRUNC(A.DATA_BAIXA) >= :data2) AND '#11
+      ''
+      ''
+      ''
+      
+        '(COD_CLIENTE = '#39'59275792008991'#39' OR COD_CLIENTE = '#39'59275792002799' +
+        #39')'#11
+      ''
+      ''
+      ''
+      #11
+      ''
+      ''
+      ''
+      ')'#11
+      ''
+      ''
+      ''
+      'GROUP BY COD_CONTA_CORRENTE ')
+    Left = 2056
+    Top = 240
+  end
+  object q_saidas_bancos_tarifas: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(VALOR) AS VALOR, COD_CONTA_CORRENTE  F' +
+        'ROM LCONTAS WHERE DATA = :data1 AND COD_ORIGEM_LANC = 0 AND DB_C' +
+        'R = '#39'D'#39#11
+      ''
+      'GROUP BY COD_CONTA_CORRENTE)')
+    Left = 2368
+    Top = 56
+  end
+  object q_acesso: TADOQuery
+    Connection = conexao_sql
+    Parameters = <>
+    SQL.Strings = (
+      
+        'SELECT * FROM TELAS_ACESSO WHERE USUARIO = '#39'ITALO.SCHRAMM'#39' AND I' +
+        'DTELA = 1')
+    Left = 360
+    Top = 208
+  end
+  object q_entradas_bancos_seminovos: TADOQuery
+    Connection = conexao
+    Parameters = <
+      item
+        Name = 'data1'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT * FROM (SELECT SUM(B.VALOR_PRINCIPAL) AS VALOR, B.COD_CON' +
+        'TA_TESOURARIA AS CONTA_BAIXA FROM VW_CRECEBER A, BAIXA_CONTAS_RE' +
+        'CEBER B '#11
+      ''
+      ''
+      
+        'WHERE A.COD_EMPRESA = B.COD_EMPRESA AND A.COD_TIPO_FATURA = B.CO' +
+        'D_TIPO_FATURA AND A.DATA_EMISSAO = B.DATA_EMISSAO'#11
+      ''
+      ''
+      
+        'AND A.NR_FATURA = B.NR_FATURA AND A.PARCELA = B.PARCELA AND TRUN' +
+        'C(B.DATA_BAIXA) = :data1 AND A.COD_NATUREZA_RECEITA_DESPESA = 15' +
+        '1'#11
+      ''
+      ''
+      'GROUP BY (B.COD_CONTA_TESOURARIA))')
+    Left = 560
+    Top = 176
+  end
+end

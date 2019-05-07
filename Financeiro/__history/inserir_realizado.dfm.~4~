@@ -1,0 +1,66 @@
+object f_inserir_realizado: Tf_inserir_realizado
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  Caption = 'Realizado'
+  ClientHeight = 294
+  ClientWidth = 453
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 107
+    Top = 57
+    Width = 68
+    Height = 16
+    Caption = 'Categoria:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object cbcategoria: TComboBox
+    Left = 195
+    Top = 56
+    Width = 145
+    Height = 22
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+    Items.Strings = (
+      '1 - CONSORCIO'
+      '2 - COMISSAO'
+      '3 - VEICULOS VN'
+      '4 - VEICULOS VD'
+      '5 - SEMINOVOS'
+      '6 - PECAS GM'
+      '7 - CARTAO DE CREDITO'
+      '8 - SAL E ENCARGOS'
+      '9 - RESCISAO'
+      '10 - ALUGUEL'
+      '11 - IMPOSTOS'
+      '12 - AGUA/LUZ/TEL'
+      '13 - EMPLACAMENTO'
+      '14 - LEASING/BNDES'
+      '15 - FORNEC. DIVERSOS'
+      '16 - SOCIOS'
+      '17 - DIVERSOS'
+      '18 - REFORMA 2014'
+      '19 - EMPRESTIMOS'
+      '20 - TRANSFERENCIA ME'
+      '21 - SEGURO')
+  end
+end

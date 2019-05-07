@@ -1,0 +1,231 @@
+unit URealizado_Entradas;
+
+interface
+
+uses  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, Buttons, Menus, Mask, Grids, DBGrids, Registry,
+  DB, ADODB, Math, UDias;
+
+type
+    realizado_entradas = class(dias)
+    private
+    j, i, q : integer;
+    datac, dataf : tdate;
+    mesc, mesf, diac, diaf, dia: string;
+    procedure vendas_veiculos;
+    procedure vendas_cartoes;
+    procedure vendas_dinheiro;
+    procedure vendas_boleto;
+    procedure vendas_comissao;
+    procedure vendas_gm;
+    procedure total;
+    public
+    realizado_entrada_dia : array[1..31,1..8] of extended;
+    realizado_entrada_dia_total : array[1..31] of extended;
+    procedure calcular;
+    end;
+
+implementation
+
+uses previsao_fluxo, data_module;
+
+procedure realizado_entradas.calcular;
+var
+dia : string;
+begin
+
+    inserir_dias;
+
+    vendas_veiculos;
+
+    vendas_cartoes;
+
+    vendas_dinheiro;
+
+    vendas_boleto;
+
+    vendas_comissao;
+
+    vendas_gm;
+
+    total;
+
+end;
+
+procedure realizado_entradas.vendas_veiculos;
+var
+v_veic : extended;
+begin
+
+    dm.q_vendas_veic.Close;
+    dm.q_vendas_veic.Parameters.ParamByName('data1').Value := mes_inicio;
+    dm.q_vendas_veic.Parameters.ParamByName('data2').Value := mes_fim;
+    dm.q_vendas_veic.open;
+
+    dm.q_vendas_veic.First;
+
+    while dm.q_vendas_veic.Eof = false do
+    begin
+          dia := copy(datetostr(dm.q_vendas_veic.FieldByName('DATA').Asdatetime),1,2);
+          realizado_entrada_dia[strtoint(dia),1] := realizado_entrada_dia[strtoint(dia),1] + dm.q_vendas_veic.FieldByName('VALOR').asfloat;
+          dm.q_vendas_veic.next;
+    end;
+
+
+end;
+
+procedure realizado_entradas.vendas_cartoes;
+begin
+
+      dm.q_cartoes.Close;
+      dm.q_cartoes.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_cartoes.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_cartoes.Open;
+
+      dm.q_cartoes.first;
+
+      while dm.q_vendas_cartoes.Eof = false do
+      begin
+            if dm.q_vendas_cartoes.FieldByName('DIAS_VENCIMENTO').AsInteger = 30 then
+            begin
+                  dia := copy(datetostr(dm.q_cartoes.FieldByName('DATA').Asdatetime),1,2);
+                  realizado_entrada_dia[strtoint(dia),2] := realizado_entrada_dia[strtoint(dia),2] + dm.q_cartoes.FieldByName('VALOR').asfloat;
+
+            end;
+
+            if dm.q_vendas_cartoes.FieldByName('DIAS_VENCIMENTO').AsInteger < 30 then
+            begin
+                  dia := copy(datetostr(dm.q_vendas_cartoes.FieldByName('DATA').Asdatetime),1,2);
+                  realizado_entrada_dia[strtoint(dia),3] := realizado_entrada_dia[strtoint(dia),3] + dm.q_cartoes.FieldByName('VALOR').asfloat;
+
+            end;
+
+           dm.q_cartoes.Next;
+      end;
+
+
+end;
+
+procedure realizado_entradas.vendas_dinheiro;
+var
+v_dinheiro : extended;
+begin
+
+    dm.q_vendas_dinheiro.Close;
+    dm.q_vendas_dinheiro.Parameters.ParamByName('data1').Value := mes_anterior3;
+    dm.q_vendas_dinheiro.Parameters.ParamByName('data2').Value := mes_anterior1;
+    dm.q_vendas_dinheiro.open;
+
+    i := 1;
+
+    v_dinheiro := (dm.q_vendas_dinheiro.FieldByName('VALOR').ASFLOAT / 3) / dias_uteis;
+
+    while i <= 31 do
+    begin
+          if copy(vetor_dia[i],3,1) <> '-' then
+          realizado_entrada_dia[i,4] := v_dinheiro;
+          i := i + 1;
+    end;
+
+end;
+
+procedure realizado_entradas.vendas_boleto;
+begin
+
+      dm.q_entradas_boleto.Close;
+      dm.q_entradas_boleto.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_entradas_boleto.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_entradas_boleto.Open;
+
+      dm.q_entradas_boleto.first;
+
+      while dm.q_entradas_boleto.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_entradas_boleto.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  realizado_entrada_dia[strtoint(dia),5] := realizado_entrada_dia[strtoint(dia),5] + dm.q_entradas_boleto.FieldByName('VALOR').asfloat;
+
+
+           dm.q_entradas_boleto.Next;
+      end;
+
+end;
+
+procedure realizado_entradas.vendas_comissao;
+begin
+      dm.q_entradas_comissao.Close;
+      dm.q_entradas_comissao.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_entradas_comissao.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_entradas_comissao.Open;
+
+      dm.q_entradas_comissao.first;
+
+      while dm.q_entradas_comissao.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_entradas_comissao.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  realizado_entrada_dia[strtoint(dia),6] := realizado_entrada_dia[strtoint(dia),5] + dm.q_entradas_comissao.FieldByName('VALOR').asfloat;
+
+
+           dm.q_entradas_comissao.Next;
+      end;
+
+
+end;
+
+procedure realizado_entradas.vendas_gm;
+begin
+
+      dm.q_entradas_gm.Close;
+      dm.q_entradas_gm.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_entradas_gm.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_entradas_gm.Open;
+
+      dm.q_entradas_gm.first;
+
+      while dm.q_entradas_gm.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_entradas_gm.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  realizado_entrada_dia[strtoint(dia),7] := realizado_entrada_dia[strtoint(dia),5] + dm.q_entradas_gm.FieldByName('VALOR').asfloat;
+
+
+           dm.q_entradas_gm.Next;
+      end;
+end;
+
+procedure realizado_entradas.total;
+begin
+
+      dm.q_entradas_diaria_c.Close;
+      dm.q_entradas_diaria_c.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_entradas_diaria_c.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_entradas_diaria_c.Open;
+
+      dm.q_entradas_diaria_c.First;
+
+      while dm.q_entradas_diaria_c.eof = false do
+      begin
+            dia := copy(datetostr(dm.q_entradas_diaria_c.FieldByName('DATA').Asdatetime),1,2);
+            realizado_entrada_dia_total[strtoint(dia)] := dm.q_entradas_diaria_c.FieldByName('VALOR').AsFloat;
+            dm.q_entradas_diaria_c.Next;
+      end;
+
+      {dm.q_entradas_diaria_d.Close;
+      dm.q_entradas_diaria_d.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_entradas_diaria_d.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_entradas_diaria_d.Open;
+
+      dm.q_entradas_diaria_d.First;
+
+      while dm.q_entradas_diaria_d.eof = false do
+      begin
+            dia := copy(datetostr(dm.q_entradas_diaria_d.FieldByName('DATA').Asdatetime),1,2);
+            realizado_entrada_dia_total[strtoint(dia)] := realizado_entrada_dia_total[strtoint(dia)] - dm.q_entradas_diaria_d.FieldByName('VALOR').AsFloat;
+            dm.q_entradas_diaria_d.Next;
+      end;
+                          }
+end;
+
+end.
+

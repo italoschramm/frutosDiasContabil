@@ -1,0 +1,244 @@
+object f_fluxo_semanal: Tf_fluxo_semanal
+  Left = 0
+  Top = 0
+  Caption = 'Fluxo Semanal'
+  ClientHeight = 602
+  ClientWidth = 1004
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Visible = True
+  WindowState = wsMaximized
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 1004
+    Height = 97
+    Align = alTop
+    TabOrder = 0
+    object btfiltrar: TButton
+      Left = 88
+      Top = 37
+      Width = 75
+      Height = 25
+      Caption = 'Filtrar'
+      TabOrder = 0
+      OnClick = btfiltrarClick
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Top = 97
+    Width = 1004
+    Height = 505
+    Align = alClient
+    DataSource = DataSource1
+    TabOrder = 1
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+    OnDrawColumnCell = DBGrid1DrawColumnCell
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'DESCRICAO'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -11
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C1'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -11
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C2'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -11
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C3'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -11
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C4'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -11
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C5'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -11
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C6'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -11
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C7'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -11
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'TOTAL'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -11
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 100
+        Visible = True
+      end>
+  end
+  object DataSource1: TDataSource
+    DataSet = tb_tela
+    Left = 456
+    Top = 456
+  end
+  object q_limpa_tela: TADOQuery
+    Connection = dm.conexao_sql
+    Parameters = <>
+    SQL.Strings = (
+      
+        'UPDATE FLX_FLUXO_SEMANAL SET C1 = 0, C2 = 0, C3 = 0, C4 = 0, C5 ' +
+        '= 0, C6 = 0, C7 = 0, TOTAL = 0')
+    Left = 112
+    Top = 448
+  end
+  object q_atualizar_tela: TADOQuery
+    Connection = dm.conexao_sql
+    Parameters = <
+      item
+        Name = 'cod'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'valor'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'id'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'UPDATE FLX_FLUXO_SEMANAL SET :cod = :valor where ID = :id')
+    Left = 256
+    Top = 448
+  end
+  object tb_tela: TADOTable
+    Active = True
+    Connection = dm.conexao_sql
+    CursorType = ctStatic
+    TableName = 'FLX_FLUXO_SEMANAL'
+    Left = 360
+    Top = 456
+    object tb_telaID: TIntegerField
+      FieldName = 'ID'
+    end
+    object tb_telaDESCRICAO: TStringField
+      FieldName = 'DESCRICAO'
+      Size = 50
+    end
+    object tb_telaC1: TFloatField
+      FieldName = 'C1'
+      currency = True
+    end
+    object tb_telaC2: TFloatField
+      FieldName = 'C2'
+      currency = True
+    end
+    object tb_telaC3: TFloatField
+      FieldName = 'C3'
+      currency = True
+    end
+    object tb_telaC4: TFloatField
+      FieldName = 'C4'
+      currency = True
+    end
+    object tb_telaC5: TFloatField
+      FieldName = 'C5'
+      currency = True
+    end
+    object tb_telaC6: TFloatField
+      FieldName = 'C6'
+      currency = True
+    end
+    object tb_telaC7: TFloatField
+      FieldName = 'C7'
+      currency = True
+    end
+    object tb_telaTOTAL: TFloatField
+      FieldName = 'TOTAL'
+      currency = True
+    end
+  end
+end

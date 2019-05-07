@@ -1,0 +1,553 @@
+unit UPrevisao;
+
+interface
+
+uses  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, Buttons, Menus, Mask, Grids, DBGrids, Registry,
+  DB, ADODB, Math, UDias;
+
+type
+    previsao = class(dias)
+    private
+    j : integer;
+    public
+    vetor_categoria : array[1..21] of extended;
+    previsao_total : array[1..31] of extended;
+    previsao_dia : array[1..31,1..21] of extended;
+    previsao_mes : extended;
+    constructor criar;
+    destructor destruir;
+    procedure calcular;
+    procedure media;
+    procedure total;
+    procedure realizado_dia;
+    procedure particular;
+    end;
+
+implementation
+
+uses previsao_fluxo, data_module;
+
+constructor  previsao.criar;
+begin
+
+end;
+
+destructor previsao.destruir;
+begin
+
+end;
+
+procedure previsao.calcular;
+begin
+
+    inserir_dias;
+
+    dm.q_historico.Close;
+    dm.q_historico.Parameters.ParamByName('data1').Value := mes_anterior3;
+    dm.q_historico.Parameters.ParamByName('data2').Value := mes_anterior1;
+    dm.q_historico.Open;
+
+    dm.q_historico_saidas.Close;
+    dm.q_historico_saidas.Parameters.ParamByName('data1').Value := mes_anterior3;
+    dm.q_historico_saidas.Parameters.ParamByName('data2').Value := mes_anterior1;
+    dm.q_historico_saidas.open;
+
+    dm.q_historico.First;
+
+    while dm.q_historico.Eof = false do
+    begin
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 1 then
+          begin
+               vetor_categoria[1] := vetor_categoria[1] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 2 then
+          begin
+               vetor_categoria[2] := vetor_categoria[2] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 4 then
+          begin
+               vetor_categoria[4] := vetor_categoria[4] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 6 then
+          begin
+               vetor_categoria[6] := vetor_categoria[6] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 7 then
+          begin
+               vetor_categoria[7] := vetor_categoria[7] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 8 then
+          begin
+               vetor_categoria[8] := vetor_categoria[8] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 9 then
+          begin
+               vetor_categoria[9] := vetor_categoria[9] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 10 then
+          begin
+               vetor_categoria[10] := vetor_categoria[10] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 11 then
+          begin
+               vetor_categoria[11] := vetor_categoria[11] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 12 then
+          begin
+               vetor_categoria[12] := vetor_categoria[12] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 13 then
+          begin
+               vetor_categoria[13] := vetor_categoria[13] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 14 then
+          begin
+               vetor_categoria[14] := vetor_categoria[14] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 15 then
+          begin
+               vetor_categoria[15] := vetor_categoria[15] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 16 then
+          begin
+               vetor_categoria[16] := vetor_categoria[16] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 17 then
+          begin
+               vetor_categoria[17] := vetor_categoria[17] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 18 then
+          begin
+               vetor_categoria[18] := vetor_categoria[18] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 19 then
+          begin
+               vetor_categoria[19] := vetor_categoria[19] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 20 then
+          begin
+               vetor_categoria[20] := vetor_categoria[20] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          if dm.q_historico.FieldByName('COD_CATEGORIA').AsInteger = 21 then
+          begin
+               vetor_categoria[21] := vetor_categoria[21] + dm.q_historico.FieldByName('VALOR').AsFloat;
+          end;
+
+          dm.q_historico.Next;
+    end;
+
+    dm.q_historico_saidas.Close;
+    dm.q_historico_saidas.Parameters.ParamByName('data1').Value := mes_anterior3;
+    dm.q_historico_saidas.Parameters.ParamByName('data2').Value := mes_anterior1;
+    dm.q_historico_saidas.open;
+
+    dm.q_historico_saidas.first;
+
+    while dm.q_historico_saidas.Eof = false do
+    begin
+
+          if dm.q_historico_saidas.FieldByName('COD_NATUREZA_RECEITA_DESPESA').asstring = '143' then
+          begin
+               vetor_categoria[3] := dm.q_historico_saidas.FieldByName('VALOR').AsFloat;
+          end;
+
+           if dm.q_historico_saidas.FieldByName('COD_NATUREZA_RECEITA_DESPESA').asstring = '147' then
+          begin
+               vetor_categoria[6] := dm.q_historico_saidas.FieldByName('VALOR').AsFloat;
+          end;
+
+    dm.q_historico_saidas.next;
+
+    end;
+
+
+end;
+
+
+procedure previsao.media;
+var
+i : integer;
+data : string;
+begin
+
+    j := 1;
+
+     while j <= 21 do
+     begin
+
+           if (j = 10) or (j = 12) then
+           begin
+
+                particular;
+
+           end
+           else
+           begin
+
+                i := 1;
+
+                data := formatdatetime('/MM/YYYY', strtodate(data_pesquisa));
+
+                while i <= 31 do
+                begin
+
+                      if copy(vetor_dia[i],3,1) <> '-' then
+                       begin
+                            previsao_mes := vetor_categoria[j] / 3;
+                            previsao_dia[i,j] := previsao_mes / dias_uteis;
+                            previsao_total[i] := previsao_total[i] + previsao_dia[i,j];
+
+                            i := i + 1;
+                      end
+                      else
+                      begin
+                            i := i + 1;
+                      end;
+
+
+
+                end;
+
+
+          end;
+          j := j + 1;
+
+     end;
+
+     //pago;
+     //total;
+
+
+end;
+
+procedure previsao.particular;
+var
+i : integer;
+begin
+
+      if j = 10 then
+      begin
+
+            previsao_mes := vetor_categoria[j] / 3;
+
+            i := 8;
+
+            while i <= 31 do
+            begin
+
+                  if copy(vetor_dia[i],3,1) <> '-' then
+                  begin
+                            previsao_mes := vetor_categoria[j] / 3;
+                            previsao_dia[i,j] := previsao_mes;
+                            previsao_total[i] := previsao_total[i] + previsao_dia[i,j];
+                            i := 35;
+                      end
+                      else
+                      begin
+                            i := i + 1;
+                      end;
+
+
+
+                end;
+
+
+
+
+      end;
+
+
+end;
+
+procedure previsao.total;
+begin
+
+     f_previsao_fluxo.tb_tela.Close;
+     f_previsao_fluxo.tb_tela.Open;
+
+     f_previsao_fluxo.tb_tela.First;
+
+     while f_previsao_fluxo.tb_tela.Eof = false do
+     begin
+
+     f_previsao_fluxo.tb_tela.Edit;
+     f_previsao_fluxo.tb_tela.FieldByName('TOTAL').value :=
+     f_previsao_fluxo.tb_tela.FieldByName('C1').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C2').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C3').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C4').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C5').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C6').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C7').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C8').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C9').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C10').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C11').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C12').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C13').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C14').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C15').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C16').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C17').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C18').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C19').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C20').AsFloat +
+     f_previsao_fluxo.tb_tela.FieldByName('C21').AsFloat ;
+     f_previsao_fluxo.tb_tela.Post;
+
+     f_previsao_fluxo.tb_tela.Next;
+     end;
+end;
+
+procedure previsao.realizado_dia;
+var
+dia : string;
+i : integer;
+begin
+
+      dm.q_pagos.Close;
+      dm.q_pagos.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_pagos.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_pagos.open;
+
+      dm.q_pagos.First;
+
+      while dm.q_pagos.Eof = false do
+      begin
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 1 then
+            begin
+                   dia := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 9,2);
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(1) + ' = :valor, K'+inttostr(1)+' = 1 where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := dia;
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 2 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(2) + ' = :valor, K'+inttostr(2)+' = 1 where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 9,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 3 then
+            begin
+                  i := strtoint(copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2));
+                  previsao_dia[i,3] := dm.q_pagos.FieldByName('VALOR').AsExtended;
+
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 4 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(4) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 5 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(5) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 6 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(6) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 7 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(7) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 8 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(8) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 9 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(9) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 10 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(10) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 11 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(11) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 12 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(12) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 13 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(13) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 14 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(14) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 15 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(15) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 16 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(16) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 17 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(17) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 18 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(18) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 19 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(19) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 20 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(20) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+            if dm.q_pagos.FieldByName('COD_CATEGORIA').AsInteger = 21 then
+            begin
+                   f_previsao_fluxo.q_atualizar_tela.Close;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Clear;
+                   f_previsao_fluxo.q_atualizar_tela.SQL.Add('UPDATE FLX_FLUXO SET C'+inttostr(21) + ' = :valor where DIA = :dia');
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('valor').Value := dm.q_pagos.FieldByName('VALOR').asfloat;
+                   f_previsao_fluxo.q_atualizar_tela.Parameters.ParamByName('dia').Value := copy(datetostr(dm.q_pagos.FieldByName('DATA').asdatetime), 1,2);
+                   f_previsao_fluxo.q_atualizar_tela.ExecSQL;
+            end;
+
+
+
+          dm.q_pagos.next;
+      end;
+
+end;
+
+end.
+

@@ -1,0 +1,242 @@
+unit previsao_entrada;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids,
+  Data.DB, Data.Win.ADODB, Vcl.StdCtrls, UPrevisao_Entradas, Vcl.ComCtrls;
+
+type
+  Tf_previsao_entradas = class(TForm)
+    Panel1: TPanel;
+    DBGrid1: TDBGrid;
+    DataSource1: TDataSource;
+    btfiltrar: TButton;
+    cbano: TComboBox;
+    cbmes: TComboBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    q_atualizar_tela: TADOQuery;
+    tb_telaDIA: TStringField;
+    tb_telaC1: TFloatField;
+    tb_telaC2: TFloatField;
+    tb_telaC3: TFloatField;
+    tb_telaC4: TFloatField;
+    tb_telaC5: TFloatField;
+    tb_telaC6: TFloatField;
+    tb_telaC7: TFloatField;
+    tb_telaC8: TFloatField;
+    tb_telatb_telaTOTAL: TFloatField;
+    q_limpa_tela: TADOQuery;
+    tb_tela: TADOTable;
+    q_util: TADOQuery;
+    tb_telaDIA_UTEL: TBooleanField;
+    procedure btfiltrarClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure data;
+    procedure limpa_tela;
+    procedure total;
+    procedure dia_util;
+    procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+  private
+  ObjEntradas : previsao_entradas;
+  i, j : integer;
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  f_previsao_entradas: Tf_previsao_entradas;
+
+implementation
+
+{$R *.dfm}
+
+uses data_module;
+
+procedure Tf_previsao_entradas.btfiltrarClick(Sender: TObject);
+begin
+
+      ObjEntradas := previsao_entradas.criar;
+      limpa_tela;
+      data;
+      ObjEntradas.calcular;
+      dia_util;
+
+      j := 1;
+
+      while j <= 8 do
+      begin
+            i := 1;
+            while i <= 31 do
+            begin
+                  
+                        q_atualizar_tela.Close;
+                        q_atualizar_tela.SQL.Clear;
+                        q_atualizar_tela.SQL.Add('UPDATE FLX_PREVISAO_ENTRADAS SET C'+inttostr(j) + ' = :valor where DIA = :dia');
+                        q_atualizar_tela.Parameters.ParamByName('valor').Value := ObjEntradas.previsao_entrada_dia[i,j];
+                        q_atualizar_tela.Parameters.ParamByName('dia').Value := formatfloat('00',i);
+                        q_atualizar_tela.ExecSQL;
+
+                        i := i + 1;
+
+            end;
+            j := j + 1;
+
+      end;
+
+      total;
+
+      tb_tela.Close;
+      tb_tela.Open;
+      ObjEntradas.destruir;
+
+end;
+
+procedure Tf_previsao_entradas.total;
+begin
+
+     tb_tela.Close;
+     tb_tela.Open;
+
+     tb_tela.First;
+
+     while tb_tela.Eof = false do
+     begin
+
+     tb_tela.Edit;
+     tb_tela.FieldByName('TOTAL').value :=
+     tb_tela.FieldByName('C1').AsFloat +
+     tb_tela.FieldByName('C2').AsFloat +
+     tb_tela.FieldByName('C3').AsFloat +
+     tb_tela.FieldByName('C4').AsFloat +
+     tb_tela.FieldByName('C5').AsFloat +
+     tb_tela.FieldByName('C6').AsFloat +
+     tb_tela.FieldByName('C7').AsFloat +
+     tb_tela.FieldByName('C8').AsFloat;
+     tb_tela.Post;
+
+     tb_tela.Next;
+     end;
+
+end;
+
+procedure Tf_previsao_entradas.data;
+begin
+      if cbmes.Text = 'JANEIRO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/01/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'FEVEREIRO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/02/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'MARÇO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/03/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'ABRIL' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/04/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'MAIO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/05/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'JUNHO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/06/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'JULHO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/07/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'AGOSTO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/08/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'SETEMBRO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/09/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'OUTUBRO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/10/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'NOVEMBRO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/11/' + cbano.text;
+      End;
+
+      if cbmes.Text = 'DEZEMBRO' then
+      Begin
+            ObjEntradas.data_pesquisa := '01/12/' + cbano.text;
+      End;
+
+
+end;
+
+procedure Tf_previsao_entradas.DBGrid1DrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+
+      If (tb_tela.FieldByName('DIA_UTEL').AsBoolean = TRUE) then
+      dbgrid1.canvas.brush.color := clSilver
+      else
+      dbgrid1.canvas.brush.color := clSkyBlue;
+
+
+
+      DBGrid1.Canvas.FillRect(Rect);
+      dbgrid1.DefaultDrawColumnCell(Rect, DataCol, Column, State);
+
+end;
+
+procedure Tf_previsao_entradas.limpa_tela;
+begin
+
+      q_limpa_tela.Close;
+      q_limpa_tela.ExecSQL;
+
+end;
+
+procedure tf_previsao_entradas.dia_util;
+begin
+
+      i := 1;
+
+      while i <= 31 do
+      begin
+            if copy(ObjEntradas.vetor_dia[i],3,1) <> '-' then
+            begin
+                  q_util.Close;
+                  q_util.Parameters.ParamByName('dia').Value := formatfloat('00',i);
+                  q_util.ExecSQL;
+                  i := i + 1;
+
+            end;
+            i := i + 1;
+      end;
+end;
+
+procedure Tf_previsao_entradas.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+      limpa_tela;
+      Action := Cafree;
+end;
+
+end.

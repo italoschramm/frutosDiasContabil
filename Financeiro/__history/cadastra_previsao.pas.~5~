@@ -1,0 +1,30 @@
+unit cadastra_previsao;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, Data.DB,
+  Data.Win.ADODB;
+
+type
+  Tf_cadastrar_despesa = class(TForm)
+    edvalor: TEdit;
+    cbcategoria: TComboBox;
+    DateTimePicker1: TDateTimePicker;
+    btcadastrar: TButton;
+    q_inserir: TADOQuery;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  f_cadastrar_despesa: Tf_cadastrar_despesa;
+
+implementation
+
+{$R *.dfm}
+
+end.

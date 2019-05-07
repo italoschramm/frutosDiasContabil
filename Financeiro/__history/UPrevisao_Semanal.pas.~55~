@@ -1,0 +1,250 @@
+unit UPrevisao_Semanal;
+
+interface
+
+uses  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, Buttons, Menus, Mask, Grids, DBGrids, Registry,
+  DB, ADODB, Math, UDias, USaldo_Diario, UPrevisao_Entradas, UPrevisao_Saidas;
+
+type
+    previsao_semanal = class(dias)
+    private
+    j, i, q : integer;
+    datac, dataf : tdate;
+    mesc, mesf, diac, diaf, dia, data_inicial : string;
+    ObjSaldo_Diario : saldo_contas;
+    ObjPrevisao_Entradas : previsao_entradas;
+    ObjPrevisao_Saidas : previsao;
+    procedure saldo_inicial;
+    procedure entradas_veiculos;
+    procedure entradas_transferencias;
+    procedure entradas_gm;
+    procedure entradas_cartoes;
+    procedure entradas_boleto;
+    procedure saidas_titulos;
+    procedure saidas_impostos;
+    public
+    previsao_semanal : array[1..16,1..8] of extended;
+    procedure calcular;
+    end;
+
+implementation
+
+uses previsao_fluxo, data_module;
+
+procedure previsao_semanal.calcular;
+var
+dia : string;
+begin
+     data_pesquisa :=  formatdatetime('01/MM/YYYY', now);
+
+     ObjPrevisao_Entradas := previsao_entradas.criar;
+     ObjPrevisao_Entradas.data_pesquisa := data_pesquisa;
+     ObjPrevisao_Entradas.calcular;
+
+     ObjPrevisao_Saidas := previsao.criar;
+     ObjPrevisao_Saidas.data_pesquisa := data_pesquisa;
+     ObjPrevisao_Saidas.calcular;
+
+     saldo_inicial;
+
+     entradas_veiculos;
+     entradas_transferencias;
+     entradas_gm;
+     entradas_cartoes;
+     entradas_boleto;
+
+     saidas_titulos;
+     saidas_impostos;
+
+     ObjPrevisao_Entradas.destruir;
+     ObjPrevisao_Saidas.destruir;
+
+end;
+
+procedure previsao_semanal.saldo_inicial;
+begin
+       ObjSaldo_Diario := saldo_contas.criar;
+       ObjSaldo_Diario.data_pesquisa := data_pesquisa;
+       ObjSaldo_Diario.calcular;
+       i := strtoint(formatdatetime('DD', now));
+       j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[1,j] := ObjSaldo_Diario.saldo_total_dia[i];
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+       ObjSaldo_Diario.destruir;
+
+end;
+
+procedure previsao_semanal.entradas_transferencias;
+begin
+       i := strtoint(formatdatetime('DD', now));
+       j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[2,j] := ObjPrevisao_Entradas.previsao_entrada_dia[i,7];
+
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+
+
+end;
+
+procedure previsao_semanal.entradas_veiculos;
+begin
+
+
+       i := strtoint(formatdatetime('DD', now));
+       j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[3,j] := ObjPrevisao_Entradas.previsao_entrada_dia[i,1];
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+
+end;
+
+procedure previsao_semanal.entradas_gm;
+begin
+       i := strtoint(formatdatetime('DD', now));
+       j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[4,j] := ObjPrevisao_Entradas.previsao_entrada_dia[i,6];
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+
+end;
+
+procedure previsao_semanal.entradas_cartoes;
+begin
+
+       i := strtoint(formatdatetime('DD', now));
+       j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[5,j] := ObjPrevisao_Entradas.previsao_entrada_dia[i,2];
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+end;
+
+procedure previsao_semanal.entradas_boleto;
+begin
+
+       i := strtoint(formatdatetime('DD', now));
+       j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[6,j] := ObjPrevisao_Entradas.previsao_entrada_dia[i,4];
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+end;
+
+procedure previsao_semanal.saidas_titulos;
+begin
+
+       //Consorcio ----------------------
+
+       i := strtoint(formatdatetime('DD', now));
+       j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[8,j] := previsao_semanal[8,j] + ObjPrevisao_Saidas.previsao_saida_dia[i,4];
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+       //Titulos -----------------------
+
+       i := strtoint(formatdatetime('DD', now));
+       j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[8,j] := previsao_semanal[8,j] + ObjPrevisao_Saidas.previsao_saida_dia[i,12];
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+       //Aluguel ----------------------
+
+        i := strtoint(formatdatetime('DD', now));
+       j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[8,j] := previsao_semanal[8,j] + ObjPrevisao_Saidas.previsao_saida_dia[i,17];
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+end;
+
+procedure previsao_semanal.saidas_impostos;
+begin
+      i := strtoint(formatdatetime('DD', now));
+      j := 1;
+
+       while j <= 7 do
+       begin
+            if i <= 31 then
+            begin
+                  previsao_semanal[8,j] := ObjPrevisao_Saidas.previsao_saida_dia[i,11];
+                  i := i + 1;
+            end;
+            j := j + 1;
+       end;
+
+
+end;
+
+
+end.

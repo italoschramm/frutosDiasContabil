@@ -1,0 +1,51 @@
+unit realizado_saidas;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Grids,
+  Vcl.DBGrids, Data.Win.ADODB, Data.DB;
+
+type
+  Tf_realizado_saidas = class(TForm)
+    Panel1: TPanel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    lbsaldo: TLabel;
+    lbinicial: TLabel;
+    Label5: TLabel;
+    cbmes: TComboBox;
+    cbano: TComboBox;
+    btfiltrar: TButton;
+    DBGrid1: TDBGrid;
+    DataSource1: TDataSource;
+    tb_fluxo: TADOTable;
+    tb_fluxoDIA: TWideStringField;
+    tb_fluxoC1: TFloatField;
+    tb_fluxoC2: TFloatField;
+    tb_fluxoC3: TFloatField;
+    tb_fluxoC4: TFloatField;
+    tb_fluxoC5: TFloatField;
+    tb_fluxoC6: TFloatField;
+    tb_fluxoC7: TFloatField;
+    tb_fluxoC8: TFloatField;
+    tb_fluxoC9: TFloatField;
+    tb_fluxoC10: TFloatField;
+    q_atualizar_tela: TADOQuery;
+    q_limpa_tela: TADOQuery;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  f_realizado_saidas: Tf_realizado_saidas;
+
+implementation
+
+{$R *.dfm}
+
+end.

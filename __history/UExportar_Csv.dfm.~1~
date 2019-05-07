@@ -1,0 +1,340 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 606
+  ClientWidth = 883
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 883
+    Height = 113
+    Align = alTop
+    TabOrder = 0
+    ExplicitLeft = -118
+    ExplicitWidth = 885
+    object Label1: TLabel
+      Left = 48
+      Top = 46
+      Width = 59
+      Height = 18
+      Caption = 'Produto'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -15
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object edproduto: TEdit
+      Left = 136
+      Top = 42
+      Width = 169
+      Height = 27
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+    end
+    object btpesquisar: TButton
+      Left = 352
+      Top = 39
+      Width = 84
+      Height = 37
+      Caption = 'Pesquisar'
+      TabOrder = 1
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 113
+    Width = 883
+    Height = 384
+    Align = alTop
+    TabOrder = 1
+    ExplicitLeft = -118
+    ExplicitWidth = 885
+    object Panel3: TPanel
+      Left = 1
+      Top = 1
+      Width = 408
+      Height = 382
+      Align = alLeft
+      TabOrder = 0
+      object DBGrid1: TDBGrid
+        Left = 1
+        Top = 1
+        Width = 406
+        Height = 380
+        Align = alClient
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'COD_PRODUTO'
+            Title.Alignment = taCenter
+            Title.Caption = 'C'#243'digo'
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'DESCRICAO'
+            Title.Alignment = taCenter
+            Title.Caption = 'Descri'#231#227'o'
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Width = 200
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'PRECO_VENDA'
+            Title.Alignment = taCenter
+            Title.Caption = 'Pre'#231'o'
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'TAMANHO'
+            Title.Alignment = taCenter
+            Title.Caption = 'Tamanho'
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Width = 60
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'COR_DESC'
+            Title.Alignment = taCenter
+            Title.Caption = 'Cor'
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Width = 100
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'COD_BARRAS'
+            Title.Alignment = taCenter
+            Title.Caption = 'C'#243'd. Barras'
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Width = 120
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CATEGORIA_DESC'
+            Title.Alignment = taCenter
+            Title.Caption = 'Categoria'
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Width = 100
+            Visible = True
+          end>
+      end
+    end
+    object Panel4: TPanel
+      Left = 487
+      Top = 1
+      Width = 395
+      Height = 382
+      Align = alRight
+      TabOrder = 1
+      ExplicitLeft = 489
+      object DBGrid2: TDBGrid
+        Left = 1
+        Top = 1
+        Width = 393
+        Height = 380
+        Align = alClient
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'COD_PRODUTO'
+            Title.Alignment = taCenter
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'DESCRICAO'
+            Title.Alignment = taCenter
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'PRECO_VENDA'
+            Title.Alignment = taCenter
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'TAMANHO_DESC'
+            Title.Alignment = taCenter
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'COD_BARRAS'
+            Title.Alignment = taCenter
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CATEGORIA'
+            Title.Alignment = taCenter
+            Title.Font.Charset = DEFAULT_CHARSET
+            Title.Font.Color = clWindowText
+            Title.Font.Height = -11
+            Title.Font.Name = 'Tahoma'
+            Title.Font.Style = [fsBold]
+            Visible = True
+          end>
+      end
+    end
+    object Panel6: TPanel
+      Left = 409
+      Top = 1
+      Width = 78
+      Height = 382
+      Align = alClient
+      TabOrder = 2
+      ExplicitWidth = 80
+      object Panel7: TPanel
+        Left = 1
+        Top = 1
+        Width = 76
+        Height = 41
+        Align = alTop
+        TabOrder = 0
+        ExplicitWidth = 78
+      end
+      object Panel8: TPanel
+        Left = 1
+        Top = 81
+        Width = 76
+        Height = 41
+        Align = alTop
+        TabOrder = 1
+        ExplicitWidth = 78
+      end
+      object btincluir: TButton
+        Left = 1
+        Top = 42
+        Width = 76
+        Height = 39
+        Align = alTop
+        Caption = 'Incluir'
+        Enabled = False
+        TabOrder = 2
+        ExplicitWidth = 78
+      end
+      object btremover: TButton
+        Left = 1
+        Top = 122
+        Width = 76
+        Height = 39
+        Align = alTop
+        Caption = 'Remover'
+        Enabled = False
+        TabOrder = 3
+        ExplicitWidth = 78
+      end
+    end
+  end
+  object Panel5: TPanel
+    Left = 0
+    Top = 497
+    Width = 883
+    Height = 109
+    Align = alClient
+    TabOrder = 2
+    ExplicitLeft = -118
+    ExplicitTop = 434
+    ExplicitWidth = 885
+    ExplicitHeight = 72
+    object btexportar: TButton
+      Left = 48
+      Top = 19
+      Width = 90
+      Height = 40
+      Caption = 'Exportar'
+      TabOrder = 0
+    end
+  end
+end

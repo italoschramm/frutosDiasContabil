@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2015/08/12 08:35:27.000.544,=C:\Users\italo\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2015/08/12 08:35:51.000.721,C:\Users\italo\Documents\Embarcadero\Studio\Projects\Unit1.dfm=D:\Italo\GoogleDrive\Programas\Frutos Dias\principal.dfm</Transaction>
+    <Transaction>2015/08/12 08:35:51.000.721,C:\Users\italo\Documents\Embarcadero\Studio\Projects\Unit1.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\principal.pas</Transaction>
+    <Transaction>2015/08/12 08:35:53.000.208,C:\Users\italo\Documents\Embarcadero\Studio\Projects\Project1.dproj=D:\Italo\GoogleDrive\Programas\Frutos Dias\Project1.dproj</Transaction>
+    <Transaction>2015/08/12 08:36:01.000.040,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Unit1.pas</Transaction>
+    <Transaction>2015/08/12 08:37:25.000.793,D:\Italo\GoogleDrive\Programas\Frutos Dias\Unit1.dfm=D:\Italo\GoogleDrive\Programas\Frutos Dias\data_module.dfm</Transaction>
+    <Transaction>2015/08/12 08:37:25.000.793,D:\Italo\GoogleDrive\Programas\Frutos Dias\Unit1.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\data_module.pas</Transaction>
+    <Transaction>2015/08/12 08:38:41.000.279,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Unit2.pas</Transaction>
+    <Transaction>2015/08/12 08:41:13.000.208,D:\Italo\GoogleDrive\Programas\Frutos Dias\Unit2.dfm=D:\Italo\GoogleDrive\Programas\Frutos Dias\login.dfm</Transaction>
+    <Transaction>2015/08/12 08:41:13.000.208,D:\Italo\GoogleDrive\Programas\Frutos Dias\Unit2.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\login.pas</Transaction>
+    <Transaction>2015/08/13 11:31:06.000.961,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/08/13 11:49:27.000.128,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.dfm=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\u_schemas.dfm</Transaction>
+    <Transaction>2015/08/13 11:49:27.000.128,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\u_schemas.pas</Transaction>
+    <Transaction>2015/08/13 15:17:18.000.831,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/08/13 15:17:30.000.581,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\relatorio.pas</Transaction>
+    <Transaction>2015/08/13 15:17:30.000.581,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.dfm=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\relatorio.dfm</Transaction>
+    <Transaction>2015/08/15 10:34:08.000.338,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/08/15 10:34:34.000.136,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\UNovo.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/08/18 15:04:12.000.307,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/08/18 15:19:23.000.765,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\UDados.pas</Transaction>
+    <Transaction>2015/08/25 10:57:22.000.128,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/08/25 11:00:11.000.289,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\UCalculo.pas</Transaction>
+    <Transaction>2015/08/26 11:11:00.000.385,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit2.pas</Transaction>
+    <Transaction>2015/08/26 11:12:38.000.765,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\principal.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\balancete.pas</Transaction>
+    <Transaction>2015/08/26 11:12:38.000.765,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\principal.dfm=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\balancete.dfm</Transaction>
+    <Transaction>2015/08/26 11:12:47.000.674,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit2.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\principal.pas</Transaction>
+    <Transaction>2015/08/26 11:12:47.000.674,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit2.dfm=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\principal.dfm</Transaction>
+    <Transaction>2015/08/26 11:15:22.000.145,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\relatorio.pas=</Transaction>
+    <Transaction>2015/08/26 11:20:17.000.759,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\UNovo.pas=</Transaction>
+    <Transaction>2015/08/26 11:38:33.000.411,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/08/26 11:39:15.000.639,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.dfm=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\UFcts.dfm</Transaction>
+    <Transaction>2015/08/26 11:39:15.000.639,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\UFcts.pas</Transaction>
+    <Transaction>2015/09/08 14:57:58.000.527,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/09/08 14:58:37.000.133,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Financeiro\previsao_fluxo.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/09/08 14:58:37.000.133,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Financeiro\previsao_fluxo.dfm=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.dfm</Transaction>
+    <Transaction>2015/09/09 08:43:54.000.345,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/09/09 08:47:02.000.271,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Financeiro\UDias.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/09/09 15:15:33.000.555,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/09/09 15:16:51.000.296,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Financeiro\UContas_Pagar.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/09/11 08:37:49.000.979,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/09/11 08:38:29.000.154,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/09/11 08:40:44.000.457,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\UFCTS_Dados.pas</Transaction>
+    <Transaction>2015/09/14 14:40:34.000.653,=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas</Transaction>
+    <Transaction>2015/09/14 14:41:40.000.523,D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\Unit1.pas=D:\Italo\GoogleDrive\Programas\Frutos Dias\Lancamentos Contabil\UFcts_Excel.pas</Transaction>
+  </Transactions>
+</BorlandProject>

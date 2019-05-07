@@ -1,0 +1,350 @@
+object f_previsao_entradas: Tf_previsao_entradas
+  Left = 0
+  Top = 0
+  Caption = 'Previs'#245'es Entradas'
+  ClientHeight = 602
+  ClientWidth = 1004
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Visible = True
+  WindowState = wsMaximized
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 1004
+    Height = 97
+    Align = alTop
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 32
+      Top = 41
+      Width = 28
+      Height = 14
+      Caption = 'M'#234's:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label2: TLabel
+      Left = 232
+      Top = 41
+      Width = 29
+      Height = 14
+      Caption = 'Ano:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object btfiltrar: TButton
+      Left = 408
+      Top = 37
+      Width = 75
+      Height = 25
+      Caption = 'Filtrar'
+      TabOrder = 0
+      OnClick = btfiltrarClick
+    end
+    object cbano: TComboBox
+      Left = 273
+      Top = 39
+      Width = 64
+      Height = 21
+      TabOrder = 1
+      Items.Strings = (
+        '2015'
+        '2016'
+        '2017'
+        '2018'
+        '2019'
+        '2020'
+        '2021'
+        '2022'
+        '2023'
+        '2024'
+        '2025'
+        '2026'
+        '2027'
+        '2028'
+        '2029'
+        '2030')
+    end
+    object cbmes: TComboBox
+      Left = 80
+      Top = 39
+      Width = 121
+      Height = 21
+      TabOrder = 2
+      Items.Strings = (
+        'JANEIRO'
+        'FEVEREIRO'
+        'MAR'#199'O'
+        'ABRIL'
+        'MAIO'
+        'JUNHO'
+        'JULHO'
+        'AGOSTO'
+        'SETEMBRO'
+        'OUTUBRO'
+        'NOVEMBRO'
+        'DEZEMBRO')
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Top = 97
+    Width = 1004
+    Height = 505
+    Align = alClient
+    DataSource = DataSource1
+    TabOrder = 1
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+    OnDrawColumnCell = DBGrid1DrawColumnCell
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'DIA'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C1'
+        Title.Alignment = taCenter
+        Title.Caption = 'Vendas Veic.'
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -12
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 120
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C2'
+        Title.Alignment = taCenter
+        Title.Caption = 'C. Cr'#233'dito'
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -12
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 120
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C3'
+        Title.Alignment = taCenter
+        Title.Caption = 'C. D'#233'bito'
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -12
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 120
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C4'
+        Title.Alignment = taCenter
+        Title.Caption = 'Dinheiro'
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -12
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 120
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C5'
+        Title.Alignment = taCenter
+        Title.Caption = 'Boleto'
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -12
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 120
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C6'
+        Title.Alignment = taCenter
+        Title.Caption = 'Comiss'#227'o Geral'
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -12
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 120
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C7'
+        Title.Alignment = taCenter
+        Title.Caption = 'CC GM'
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -12
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 120
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'C8'
+        Title.Alignment = taCenter
+        Title.Caption = 'A'
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -12
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 120
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'TOTAL'
+        Title.Alignment = taCenter
+        Title.Font.Charset = DEFAULT_CHARSET
+        Title.Font.Color = clWindowText
+        Title.Font.Height = -12
+        Title.Font.Name = 'Tahoma'
+        Title.Font.Style = [fsBold]
+        Width = 120
+        Visible = True
+      end>
+  end
+  object tb_tela: TADOTable
+    Active = True
+    Connection = dm.conexao_sql
+    CursorType = ctStatic
+    TableName = 'FLX_PREVISAO_ENTRADAS'
+    Left = 280
+    Top = 264
+    object tb_telaDIA_UTEL: TIntegerField
+      FieldName = 'DIA_UTEL'
+    end
+    object tb_telaDIA: TStringField
+      FieldName = 'DIA'
+      FixedChar = True
+      Size = 10
+    end
+    object tb_telaC1: TFloatField
+      FieldName = 'C1'
+      currency = True
+    end
+    object tb_telaC2: TFloatField
+      FieldName = 'C2'
+      currency = True
+    end
+    object tb_telaC3: TFloatField
+      FieldName = 'C3'
+      currency = True
+    end
+    object tb_telaC4: TFloatField
+      FieldName = 'C4'
+      currency = True
+    end
+    object tb_telaC5: TFloatField
+      FieldName = 'C5'
+      currency = True
+    end
+    object tb_telaC6: TFloatField
+      FieldName = 'C6'
+      currency = True
+    end
+    object tb_telaC7: TFloatField
+      FieldName = 'C7'
+      currency = True
+    end
+    object tb_telaC8: TFloatField
+      FieldName = 'C8'
+      currency = True
+    end
+    object tb_telatb_telaTOTAL: TFloatField
+      FieldName = 'TOTAL'
+      currency = True
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = tb_tela
+    Left = 160
+    Top = 232
+  end
+  object q_atualizar_tela: TADOQuery
+    Connection = dm.conexao_sql
+    Parameters = <
+      item
+        Name = 'cod'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'valor'
+        Size = -1
+        Value = Null
+      end
+      item
+        Name = 'dia'
+        Size = -1
+        Value = Null
+      end>
+    SQL.Strings = (
+      'UPDATE FLX_FLUXO SET :cod = :valor where DIA = :dia')
+    Left = 280
+    Top = 368
+  end
+  object q_limpa_tela: TADOQuery
+    Connection = dm.conexao_sql
+    Parameters = <>
+    SQL.Strings = (
+      
+        'UPDATE FLX_PREVISAO_ENTRADAS SET DIA_UTEL = 0, C1 = 0, C2 = 0, C' +
+        '3 = 0, C4 = 0, C5 = 0, C6 = 0, C7 = 0, C8 = 0, TOTAL = 0')
+    Left = 128
+    Top = 296
+  end
+  object q_util: TADOQuery
+    Connection = dm.conexao_sql
+    Parameters = <
+      item
+        Name = 'dia'
+        Attributes = [paNullable]
+        DataType = ftString
+        NumericScale = 255
+        Precision = 255
+        Size = 10
+        Value = Null
+      end>
+    SQL.Strings = (
+      'UPDATE FLX_PREVISAO_ENTRADAS SET DIA_UTEL = 1 WHERE DIA = :dia')
+    Left = 168
+    Top = 376
+  end
+end

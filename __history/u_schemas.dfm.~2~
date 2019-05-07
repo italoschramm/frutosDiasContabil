@@ -1,0 +1,66 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Selecionar Schema'
+  ClientHeight = 164
+  ClientWidth = 337
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object BitBtn1: TBitBtn
+    Left = 128
+    Top = 112
+    Width = 75
+    Height = 25
+    Caption = 'Ok'
+    TabOrder = 0
+  end
+  object DBLookupComboBox1: TDBLookupComboBox
+    Left = 104
+    Top = 48
+    Width = 145
+    Height = 21
+    KeyField = 'SCHEMA_NAME'
+    ListField = 'DESCRIPTION'
+    ListSource = ds_schemas
+    TabOrder = 1
+  end
+  object q_schemas: TADOQuery
+    AutoCalcFields = False
+    Connection = dm.conexao
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      
+        'select upper(nsu.schema_name) schema_name, description, principa' +
+        'l'#11
+      'from sys.nbs_schema ns, sys.nbs_schema_user nsu'#11
+      'where ns.schema_name = nsu.schema_name'#11
+      ' and schema_user = user'#11
+      'order by schema_name')
+    Left = 40
+    Top = 32
+    object q_schemasSCHEMA_NAME: TWideStringField
+      FieldName = 'SCHEMA_NAME'
+    end
+    object q_schemasDESCRIPTION: TWideStringField
+      FieldName = 'DESCRIPTION'
+      Size = 50
+    end
+    object q_schemasPRINCIPAL: TWideStringField
+      FieldName = 'PRINCIPAL'
+      Size = 1
+    end
+  end
+  object ds_schemas: TDataSource
+    DataSet = q_schemas
+    Left = 32
+    Top = 96
+  end
+end

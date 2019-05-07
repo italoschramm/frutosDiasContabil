@@ -1,0 +1,38 @@
+unit inserir_realizado;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls;
+
+type
+  Tf_inserir_realizado = class(TForm)
+    cbcategoria: TComboBox;
+    Label1: TLabel;
+    DateTimePicker1: TDateTimePicker;
+    Label2: TLabel;
+    captionvalor: TLabel;
+    edvalor: TEdit;
+    procedure edvalorExit(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  f_inserir_realizado: Tf_inserir_realizado;
+
+implementation
+
+{$R *.dfm}
+
+procedure Tf_inserir_realizado.edvalorExit(Sender: TObject);
+begin
+
+      edvalor.Text := CurrToStrF(StrToCurrDef(Trim(edvalor.Text),0),ffNumber,2);
+
+end;
+
+end.

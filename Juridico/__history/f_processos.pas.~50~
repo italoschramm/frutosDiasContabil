@@ -1,0 +1,278 @@
+unit f_processos;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids,
+  Vcl.DBGrids, Vcl.ExtCtrls, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client;
+
+type
+  Tform_processos = class(TForm)
+    Panel1: TPanel;
+    Panel2: TPanel;
+    DBGrid1: TDBGrid;
+    Panel3: TPanel;
+    bteditar: TButton;
+    q_tela: TFDQuery;
+    q_telaIDPROCESSO: TFDAutoIncField;
+    q_telaTIPO: TWideStringField;
+    q_telaPROCESSO: TWideStringField;
+    q_telaDATA_AUDIENCIA: TDateField;
+    q_telaHORA_AUDIENCIA: TTimeField;
+    q_telaTIPO_AUDIENCIA: TWideStringField;
+    DataSource1: TDataSource;
+    btcadastrar: TButton;
+    edprocesso: TEdit;
+    Label1: TLabel;
+    btpesquisar: TButton;
+    q_pesquisar_processo: TFDQuery;
+    FDAutoIncField1: TFDAutoIncField;
+    WideStringField1: TWideStringField;
+    WideStringField2: TWideStringField;
+    DateField1: TDateField;
+    TimeField1: TTimeField;
+    WideStringField3: TWideStringField;
+    procedure bteditarClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure btcadastrarClick(Sender: TObject);
+    procedure atualizar_tela;
+    procedure DBGrid1CellClick(Column: TColumn);
+    procedure btpesquisarClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  form_processos: Tform_processos;
+
+implementation
+
+{$R *.dfm}
+
+uses cadastrar_processo, data_processos, data_module;
+
+procedure Tform_processos.btcadastrarClick(Sender: TObject);
+begin
+      dm_processos.cds_audiencias.EmptyDataSet;
+      f_cadastrar_processo := tf_cadastrar_processo.Create(self);
+      f_cadastrar_processo.Visible := true;
+      f_cadastrar_processo.btsalvar.Enabled := true;
+      f_cadastrar_processo.btcancelar.Enabled := true;
+      f_cadastrar_processo.btatualizar.Enabled := false;
+end;
+
+procedure Tform_processos.bteditarClick(Sender: TObject);
+begin
+     dm_processos.q_buscar_processo.Close;
+     dm_processos.q_buscar_processo.Params.ParamByName('idprocesso').Value := q_tela.FieldByName('IDPROCESSO').AsInteger;
+     dm_processos.q_buscar_processo.Open();
+
+     f_cadastrar_processo := tf_cadastrar_processo.Create(self);
+
+     f_cadastrar_processo.cbtipo_processo.Text := dm_processos.q_buscar_processo.FieldByName('TIPO').AsString;
+     f_cadastrar_processo.edprocesso.TEXT := dm_processos.q_buscar_processo.FieldByName('PROCESSO').AsString;
+     f_cadastrar_processo.edreclamante.Text := dm_processos.q_buscar_processo.FieldByName('RECLAMANTE_AUTOR').AsString;
+     f_cadastrar_processo.edreclamado.Text := dm_processos.q_buscar_processo.FieldByName('RECLAMADO_REU').AsString;
+     f_cadastrar_processo.edjuizo.Text := dm_processos.q_buscar_processo.FieldByName('JUIZO_VARA').AsString;
+     f_cadastrar_processo.edjuiz.Text := dm_processos.q_buscar_processo.FieldByName('NOME_JUIZ').AsString;
+
+     dm_processos.q_buscar_processo_audiencia.Close;
+     dm_processos.q_buscar_processo_audiencia.Params.ParamByName('idprocesso').Value := q_tela.FieldByName('IDPROCESSO').AsInteger;
+     dm_processos.q_buscar_processo_audiencia.Open();
+
+     dm_processos.q_buscar_processo_audiencia.First;
+
+     while dm_processos.q_buscar_processo_audiencia.Eof = false do
+     begin
+           dm_processos.cds_audiencias.Append;
+           dm_processos.cds_audiencias.FieldByName('DATA_AUDIENCIA').Value :=  dm_processos.q_buscar_processo_audiencia.FieldByName('DATA_AUDIENCIA').AsDateTime;
+           dm_processos.cds_audiencias.FieldByName('HORA_AUDIENCIA').Value :=  dm_processos.q_buscar_processo_audiencia.FieldByName('HORA_AUDIENCIA').AsDateTime;
+           dm_processos.cds_audiencias.FieldByName('TIPO_AUDIENCIA').Value :=  dm_processos.q_buscar_processo_audiencia.FieldByName('TIPO_AUDIENCIA').ASSTRING;
+           dm_processos.cds_audiencias.Post;
+
+           dm_processos.q_buscar_processo_audiencia.Next;
+     end;
+
+
+     dm_processos.q_buscar_processo_preposto.Close;
+     dm_processos.q_buscar_processo_preposto.Params.ParamByName('idprocesso').Value := q_tela.FieldByName('IDPROCESSO').AsInteger;
+     dm_processos.q_buscar_processo_preposto.Open();
+
+     dm_processos.q_buscar_processo_preposto.First;
+
+     while dm_processos.q_buscar_processo_preposto.Eof = false do
+     begin
+          dm_processos.cds_preposto.Append;
+          dm_processos.cds_preposto.FieldByName('NOME').Value := dm_processos.q_buscar_processo_preposto.FieldByName('NOME').AsString;
+          dm_processos.cds_preposto.FieldByName('EMAIL').Value := dm_processos.q_buscar_processo_preposto.FieldByName('EMAIL').AsString;
+          dm_processos.cds_preposto.post;
+
+          dm_processos.q_buscar_processo_preposto.next;
+     end;
+
+
+     dm_processos.q_buscar_processo_testemunhas.Close;
+     dm_processos.q_buscar_processo_testemunhas.Params.ParamByName('idprocesso').Value := q_tela.FieldByName('IDPROCESSO').AsInteger;
+     dm_processos.q_buscar_processo_testemunhas.Open();
+
+     dm_processos.q_buscar_processo_testemunhas.First;
+
+     while dm_processos.q_buscar_processo_testemunhas.Eof = false do
+     begin
+          dm_processos.cds_testemunhas.Append;
+          dm_processos.cds_testemunhas.FieldByName('NOME').Value := dm_processos.q_buscar_processo_testemunhas.FieldByName('NOME').AsString;
+          dm_processos.cds_testemunhas.FieldByName('EMAIL').Value := dm_processos.q_buscar_processo_testemunhas.FieldByName('EMAIL').AsString;
+          dm_processos.cds_testemunhas.post;
+
+          dm_processos.q_buscar_processo_testemunhas.next;
+     end;
+
+     dm_processos.q_buscar_processo_advogados.Close;
+     dm_processos.q_buscar_processo_advogados.Params.ParamByName('idprocesso').Value := q_tela.FieldByName('IDPROCESSO').AsInteger;
+     dm_processos.q_buscar_processo_advogados.Open();
+
+     dm_processos.q_buscar_processo_advogados.First;
+
+     while dm_processos.q_buscar_processo_advogados.Eof = false do
+     begin
+          dm_processos.cds_advogados.Append;
+          dm_processos.cds_advogados.FieldByName('NOME').Value := dm_processos.q_buscar_processo_advogados.FieldByName('ADVOGADO').AsString;
+          dm_processos.cds_advogados.FieldByName('EMAIL').Value := dm_processos.q_buscar_processo_advogados.FieldByName('EMAIL').AsString;
+          dm_processos.cds_advogados.post;
+
+          dm_processos.q_buscar_processo_advogados.next;
+     end;
+
+     dm_processos.q_buscar_processo_depositos_judiciais.Close;
+     dm_processos.q_buscar_processo_depositos_judiciais.Params.ParamByName('idprocesso').Value := q_tela.FieldByName('IDPROCESSO').AsInteger;
+     dm_processos.q_buscar_processo_depositos_judiciais.Open();
+
+     dm_processos.q_buscar_processo_depositos_judiciais.First;
+
+     while dm_processos.q_buscar_processo_depositos_judiciais.Eof = false do
+     begin
+          dm_processos.cds_deposito_judiciais.Append;
+          dm_processos.cds_deposito_judiciais.FieldByName('DATA_DEBITO').Value := dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('DATA_DEBITO').AsDateTime;
+          dm_processos.cds_deposito_judiciais.FieldByName('VALOR_DEPOSITO').Value := dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('VALOR_DEPOSITADO').Asfloat;
+          dm_processos.cds_deposito_judiciais.FieldByName('AGENCIA').Value :=  dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('AGENCIA').Asstring;
+          dm_processos.cds_deposito_judiciais.FieldByName('BANCO').Value := dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('BANCO').Asstring;
+          dm_processos.cds_deposito_judiciais.FieldByName('CONTA').Value := dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('CONTA').Asstring;
+          dm_processos.cds_deposito_judiciais.FieldByName('DATA_LEVANTAMENTO').Value :=  dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('DATA_LEVANTAMENTO').AsDateTime;
+          dm_processos.cds_deposito_judiciais.FieldByName('VALOR_LEVANTAMENTO').Value := dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('VALOR_LEVANTAMENTO').Asfloat;
+          dm_processos.cds_deposito_judiciais.FieldByName('CORRECAO').Value :=  dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('CORRECAO').ASFLOAT;
+          dm_processos.cds_deposito_judiciais.FieldByName('PAGAMENTO').Value :=  dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('PAGAMENTO').asstring;
+          dm_processos.cds_deposito_judiciais.FieldByName('OBSERVACAO').Value := dm_processos.q_buscar_processo_depositos_judiciais.FieldByName('OBSERVACAO').Asstring;
+          dm_processos.cds_deposito_judiciais.post;
+
+          dm_processos.q_buscar_processo_depositos_judiciais.next;
+     end;
+
+     dm_processos.q_buscar_processo_bloqueios.Close;
+     dm_processos.q_buscar_processo_bloqueios.Params.ParamByName('idprocesso').Value := q_tela.FieldByName('IDPROCESSO').AsInteger;
+     dm_processos.q_buscar_processo_bloqueios.Open();
+
+     dm_processos.q_buscar_processo_bloqueios.First;
+
+     while dm_processos.q_buscar_processo_bloqueios.Eof = false do
+     begin
+          dm_processos.cds_bloqueios.Append;
+          dm_processos.cds_bloqueios.FieldByName('DATA_BLOQUEIO').Value := dm_processos.q_buscar_processo_bloqueios.FieldByName('DATA_BLOQUEIO').AsDateTime;
+          dm_processos.cds_bloqueios.FieldByName('VALOR_SOLICITADO').Value := dm_processos.q_buscar_processo_bloqueios.FieldByName('VALOR_SOLICITADO').Asfloat;
+          dm_processos.cds_bloqueios.FieldByName('VALOR_BLOQUEADO').Value := dm_processos.q_buscar_processo_bloqueios.FieldByName('VALOR_BLOQUEIO').Asfloat;
+          dm_processos.cds_bloqueios.FieldByName('AGENCIA').Value :=  dm_processos.q_buscar_processo_bloqueios.FieldByName('AGENCIA').Asstring;
+          dm_processos.cds_bloqueios.FieldByName('BANCO').Value := dm_processos.q_buscar_processo_bloqueios.FieldByName('BANCO').Asstring;
+          dm_processos.cds_bloqueios.FieldByName('CONTA').Value := dm_processos.q_buscar_processo_bloqueios.FieldByName('CONTA').Asstring;
+          dm_processos.cds_bloqueios.FieldByName('DATA_DESBLOQUEIO').Value :=  dm_processos.q_buscar_processo_bloqueios.FieldByName('DATA_DESBLOQUEIO').AsDateTime;
+          dm_processos.cds_bloqueios.FieldByName('VALOR_DESBLOQUEIO').Value := dm_processos.q_buscar_processo_bloqueios.FieldByName('VALOR_DESBLOQUEIO').Asfloat;
+          dm_processos.cds_bloqueios.FieldByName('VALOR_DADO_PAGAMENTO').Value :=  dm_processos.q_buscar_processo_bloqueios.FieldByName('VALOR_DADO_PAGAMENTO').ASFLOAT;
+          dm_processos.cds_bloqueios.FieldByName('SALDO').Value :=  dm_processos.q_buscar_processo_bloqueios.FieldByName('SALDO').asfloat;
+          dm_processos.cds_bloqueios.FieldByName('OBS').Value := dm_processos.q_buscar_processo_bloqueios.FieldByName('OBSERVACAO').Asstring;
+          dm_processos.cds_bloqueios.post;
+
+          dm_processos.q_buscar_processo_bloqueios.next;
+     end;
+
+     dm_processos.q_buscar_processo_penhoras.Close;
+     dm_processos.q_buscar_processo_penhoras.Params.ParamByName('idprocesso').Value := q_tela.FieldByName('IDPROCESSO').AsInteger;
+     dm_processos.q_buscar_processo_penhoras.Open();
+
+     dm_processos.q_buscar_processo_penhoras.First;
+
+     while dm_processos.q_buscar_processo_penhoras.Eof = false do
+     begin
+          dm_processos.cds_penhoras.Append;
+          dm_processos.cds_penhoras.FieldByName('DATA_MANDADO_PENHORA').Value := dm_processos.q_buscar_processo_penhoras.FieldByName('DATA_MANDADO_PENHORA').AsDateTime;
+          dm_processos.cds_penhoras.FieldByName('DATA_INDICACAO').Value := dm_processos.q_buscar_processo_penhoras.FieldByName('DATA_INDICACAO').Asdatetime;
+          dm_processos.cds_penhoras.FieldByName('VALOR_PENHORA').Value := dm_processos.q_buscar_processo_penhoras.FieldByName('VALOR_PENHORA').Asfloat;
+          dm_processos.cds_penhoras.FieldByName('BENS_PENHORADO').Value :=  dm_processos.q_buscar_processo_penhoras.FieldByName('BENS_PENHORADOS').Asstring;
+          dm_processos.cds_penhoras.FieldByName('OBSERVACAO').Value := dm_processos.q_buscar_processo_penhoras.FieldByName('OBSERVACAO').Asstring;
+          dm_processos.cds_penhoras.post;
+
+          dm_processos.q_buscar_processo_penhoras.next;
+     end;
+
+     dm_processos.q_buscar_processo_outros.Close;
+     dm_processos.q_buscar_processo_outros.Params.ParamByName('idprocesso').Value := q_tela.FieldByName('IDPROCESSO').AsInteger;
+     dm_processos.q_buscar_processo_outros.Open();
+
+     dm_processos.q_buscar_processo_outros.First;
+
+     while dm_processos.q_buscar_processo_outros.Eof = false do
+     begin
+          dm_processos.cds_outros.Append;
+          dm_processos.cds_outros.FieldByName('FINALIDADE').Value := dm_processos.q_buscar_processo_outros.FieldByName('FINALIDADE').Asstring;
+          dm_processos.cds_outros.FieldByName('DATA_DEPOSITO').Value := dm_processos.q_buscar_processo_outros.FieldByName('DATA_DEPOSITO').AsDateTime;
+          dm_processos.cds_outros.FieldByName('VALOR_DEPOSITO').Value := dm_processos.q_buscar_processo_outros.FieldByName('VALOR_DEPOSITADO').asfloat;
+          dm_processos.cds_outros.FieldByName('BANCO').Value := dm_processos.q_buscar_processo_outros.FieldByName('BANCO').AsString;
+          dm_processos.cds_outros.FieldByName('AGENCIA').Value :=  dm_processos.q_buscar_processo_outros.FieldByName('AGENCIA').Asstring;
+          dm_processos.cds_outros.FieldByName('CONTA').Value := dm_processos.q_buscar_processo_outros.FieldByName('CONTA').Asstring;
+          dm_processos.cds_outros.FieldByName('OBSERVACAO').Value := dm_processos.q_buscar_processo_outros.FieldByName('OBSERVACAO').Asstring;
+          dm_processos.cds_outros.post;
+
+          dm_processos.q_buscar_processo_outros.next;
+     end;
+
+     f_cadastrar_processo.btsalvar.Enabled := false;
+     f_cadastrar_processo.btatualizar.Enabled := true;
+     f_cadastrar_processo.Visible := true;
+
+end;
+
+procedure Tform_processos.btpesquisarClick(Sender: TObject);
+begin
+      q_tela.Close;
+      q_tela.Params.ParamByName('processo').Value := '%' + edprocesso.Text + '%';
+      q_tela.Open();
+end;
+
+procedure Tform_processos.DBGrid1CellClick(Column: TColumn);
+begin
+      bteditar.Enabled := true;
+end;
+
+procedure Tform_processos.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+      Action := cafree;
+end;
+
+procedure Tform_processos.FormCreate(Sender: TObject);
+begin
+        q_tela.Close;
+        q_tela.Params.ParamByName('processo').Value := '%%';
+        q_tela.Open();
+end;
+
+procedure Tform_processos.atualizar_tela;
+begin
+      q_tela.close;
+      q_tela.open;
+end;
+
+end.

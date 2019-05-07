@@ -1,0 +1,196 @@
+unit principal;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.Imaging.jpeg,
+  Vcl.ExtCtrls, Data.DB, Data.Win.ADODB, Vcl.StdCtrls;
+
+type
+  Tf_principal = class(TForm)
+    MainMenu1: TMainMenu;
+    Arquivo1: TMenuItem;
+    Contabilidade1: TMenuItem;
+    Balancete1: TMenuItem;
+    Despesa1: TMenuItem;
+    Image1: TImage;
+    Financeiro1: TMenuItem;
+    FluxodeCaixa1: TMenuItem;
+    PrevisesparaFluxodeCaixa1: TMenuItem;
+    FluxodeCaixaDirio1: TMenuItem;
+    PrevisesEntradas1: TMenuItem;
+    SaldoContas1: TMenuItem;
+    RealizadoSadas1: TMenuItem;
+    ProgramaoFinanceiraSemanal1: TMenuItem;
+    PosioFinanceiraBancos1: TMenuItem;
+    Label1: TLabel;
+    lbbanco: TLabel;
+    Ajuda1: TMenuItem;
+    Verso1: TMenuItem;
+    Configuraes1: TMenuItem;
+    Permisses1: TMenuItem;
+    Vendas1: TMenuItem;
+    Comisses1: TMenuItem;
+    Oficina1: TMenuItem;
+    procedure Balancete1Click(Sender: TObject);
+    procedure Despesa1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure PrevisesparaFluxodeCaixa1Click(Sender: TObject);
+    procedure CadastrarDespesa1Click(Sender: TObject);
+    procedure FluxodeCaixaDirio1Click(Sender: TObject);
+    procedure PrevisesEntradas1Click(Sender: TObject);
+    procedure SaldoContas1Click(Sender: TObject);
+    procedure RealizadoSadas1Click(Sender: TObject);
+    procedure ProgramaoFinanceiraSemanal1Click(Sender: TObject);
+    procedure PosioFinanceiraBancos1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Verso1Click(Sender: TObject);
+    procedure Permisses1Click(Sender: TObject);
+    procedure Comisses1Click(Sender: TObject);
+    procedure Oficina1Click(Sender: TObject);
+  private
+          telas : array[1..100] of integer;
+    { Private declarations }
+  public
+          usuario_acesso : integer;
+          usuario : string;
+    { Public declarations }
+  end;
+
+var
+  f_principal: Tf_principal;
+
+implementation
+
+{$R *.dfm}
+
+uses balancete, UFcts, login, previsao_fluxo, cadastra_previsao,
+  inserir_realizado, fluxo_caixa, previsao_entrada, saldo_diario,
+  realizado_saidas_tela, fluxo_semanal, data_module, posicao_bancos, versao,
+  data_module_facts, f_acessos, UComissoes, UComissoes_Oficina;
+
+procedure Tf_principal.Balancete1Click(Sender: TObject);
+begin
+
+       if (f_login.usuario[1] = 1) or (f_login.usuario[10] = 10) then
+      begin
+       f_balancete := tf_balancete.create(self);
+      end
+      else
+      showmessage('Acesso Negado!');
+
+
+end;
+
+procedure Tf_principal.CadastrarDespesa1Click(Sender: TObject);
+begin
+    f_inserir_realizado := tf_inserir_realizado.create(self);
+end;
+
+procedure Tf_principal.Comisses1Click(Sender: TObject);
+begin
+
+
+       if (f_login.usuario[11] = 11) or (f_login.usuario[10] = 10) then
+      begin
+      f_vendas_comissoes := tf_vendas_comissoes.Create(self);
+      end
+      else
+      showmessage('Acesso Negado!');
+end;
+
+procedure Tf_principal.Despesa1Click(Sender: TObject);
+begin
+      if (f_login.usuario[2] = 2) or (f_login.usuario[10] = 10) then
+      begin
+      f_fcts := tf_fcts.Create(self);
+      end
+      else
+      showmessage('Acesso Negado!');
+end;
+
+procedure Tf_principal.FluxodeCaixaDirio1Click(Sender: TObject);
+begin
+      f_fluxo_caixa := Tf_fluxo_caixa.Create(self);
+end;
+
+procedure Tf_principal.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+      f_login.Close;
+end;
+
+procedure Tf_principal.FormCreate(Sender: TObject);
+begin
+      lbbanco.Caption := copy(dm.conexao_sql.ConnectionString,93,16);
+      dm_facts.tb_novos.Active := true;
+      dm_facts.tb_usados.Active := true;
+      dm_facts.tb_total.Active := true;
+      dm_facts.tb_receita_novos.Active := true;
+      dm_facts.tb_receita_usados.Active := true;
+      dm_facts.tb_oficina.Active := true;
+      dm_facts.tb_pecas.Active := true;
+      dm_facts.tb_funilaria.Active := true;
+      dm_facts.tb_administracao.Active := true;
+end;
+
+procedure Tf_principal.Oficina1Click(Sender: TObject);
+begin
+      f_comissoes_oficina := tf_comissoes_oficina.Create(self);
+end;
+
+procedure Tf_principal.Permisses1Click(Sender: TObject);
+begin
+     if (f_login.usuario[10] = 10) then
+      begin
+       f_acesso := tf_acesso.Create(self);
+      end
+      else
+      showmessage('Acesso Negado!');
+
+
+end;
+
+procedure Tf_principal.PosioFinanceiraBancos1Click(Sender: TObject);
+begin
+      f_posicao_bancos := tf_posicao_bancos.Create(self);
+end;
+
+procedure Tf_principal.PrevisesEntradas1Click(Sender: TObject);
+begin
+      f_previsao_entradas := Tf_previsao_entradas.Create(self);
+end;
+
+procedure Tf_principal.PrevisesparaFluxodeCaixa1Click(Sender: TObject);
+begin
+      if (f_login.usuario[2] = 2) or (f_login.usuario[10] = 10) then
+      begin
+       f_previsao_fluxo := Tf_previsao_fluxo.Create(self);
+      end
+      else
+      showmessage('Acesso Negado!');
+
+
+end;
+
+procedure Tf_principal.ProgramaoFinanceiraSemanal1Click(Sender: TObject);
+begin
+        f_fluxo_semanal := tf_fluxo_semanal.create(self);
+end;
+
+procedure Tf_principal.RealizadoSadas1Click(Sender: TObject);
+begin
+        f_realizado_saidas := tf_realizado_saidas.Create(self);
+end;
+
+procedure Tf_principal.SaldoContas1Click(Sender: TObject);
+begin
+      f_saldo_diario := tf_saldo_diario.Create(self);
+end;
+
+procedure Tf_principal.Verso1Click(Sender: TObject);
+begin
+      f_versao := tf_versao.Create(self);
+end;
+
+end.

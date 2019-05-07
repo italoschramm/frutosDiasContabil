@@ -1,0 +1,665 @@
+unit UPrevisao_Saidas;
+
+interface
+
+uses  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, Buttons, Menus, Mask, Grids, DBGrids, Registry,
+  DB, ADODB, Math, UDias;
+
+type
+    previsao = class(dias)
+    private
+    dia : string;
+    j : integer;
+    procedure pagamento_consorcio;
+    procedure pagamento_novos;
+    procedure pagamento_venda_direta;
+    procedure pagamento_semi_novos;
+    procedure pagamento_pecas;
+    procedure pagamento_fornecedor_diversos;
+    procedure pagamento_diversos;
+    procedure pagamento_aluguel;
+    procedure pagamento_impostos;
+    procedure pagamento_luz;
+    procedure pagamento_transferencias;
+    procedure pagamento_emprestimos;
+    procedure pagamento_salarios;
+    procedure pagamento_rescisao;
+    procedure total;
+    public
+    previsao_saida_dia_total : array[1..31] of extended;
+    previsao_saida_dia :  array[1..31,1..21] of extended;
+    procedure calcular;
+    end;
+
+implementation
+
+uses previsao_fluxo, data_module;
+
+
+procedure previsao.calcular;
+begin
+
+    inserir_dias;
+
+    pagamento_consorcio;
+    pagamento_novos;
+    pagamento_venda_direta;
+    pagamento_fornecedor_diversos;
+    pagamento_semi_novos;
+    pagamento_pecas;
+    pagamento_aluguel;
+    pagamento_impostos;
+    pagamento_luz;
+    pagamento_diversos;
+    pagamento_transferencias;
+    pagamento_emprestimos;
+    pagamento_salarios;
+    pagamento_rescisao;
+
+    total;
+
+
+end;
+
+procedure previsao.pagamento_novos;
+var
+i, q : integer;
+datac : tdate;
+diaf, diac : string;
+media_dia : extended;
+begin
+
+      dm.q_realizado_media_saida_veiculos.Close;
+      dm.q_realizado_media_saida_veiculos.Parameters.ParamByName('data1').Value := mes_anterior3;
+      dm.q_realizado_media_saida_veiculos.Parameters.ParamByName('data2').Value := mes_anterior1;
+      dm.q_realizado_media_saida_veiculos.Parameters.ParamByName('cod_status1').Value := 1;
+      dm.q_realizado_media_saida_veiculos.Parameters.ParamByName('cod_status2').Value := 1;
+      dm.q_realizado_media_saida_veiculos.Parameters.ParamByName('cod_status3').Value := 1;
+      dm.q_realizado_media_saida_veiculos.Open;
+
+      media_dia := (dm.q_realizado_media_saida_veiculos.FieldByName('VALOR').AsExtended / 3) / dias_uteis;
+
+      //Previsao Contas a Pagar
+
+      dm.q_saida_veiculos.Close;
+      dm.q_saida_veiculos.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_veiculos.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_veiculos.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_veiculos.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_veiculos.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_veiculos.Open;
+
+      dm.q_saida_veiculos.first;
+
+
+      while dm.q_saida_veiculos.Eof = false do
+      begin
+                  dia := copy(datetostr(dm.q_saida_veiculos.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  if dm.q_saida_veiculos.FieldByName('VALOR').asfloat > media_dia  then
+                  previsao_saida_dia[strtoint(dia),3] := previsao_saida_dia[strtoint(dia),3] + dm.q_saida_veiculos.FieldByName('VALOR').asfloat
+                  else
+                  previsao_saida_dia[strtoint(dia),3] := previsao_saida_dia[strtoint(dia),3] + media_dia;
+
+           dm.q_saida_veiculos.Next;
+      end;
+
+      i := 1;
+
+      while i <= 31 do
+      begin
+           if copy(vetor_dia[i], 3, 1) <> '-' then
+           begin
+                 if previsao_saida_dia[i,3] < media_dia  then
+                 previsao_saida_dia[i,3] := media_dia;
+           end;
+           i := i + 1 ;
+      end;
+
+     {
+   //Vendas Veiculos ----------------------------------------------------------
+
+    dm.q_historico_vendas.Close;
+    dm.q_historico_vendas.Parameters.ParamByName('data1').Value := mes_anterior;
+    dm.q_historico_vendas.Open;
+
+    dm.q_historico_vendas.First;
+
+
+    j := 1;
+    q := 0;
+
+    while dm.q_historico_vendas.Eof = false do
+    begin
+          i := 1;
+          // Vendas que forem F ------------------------------------------------
+          if dm.q_historico_vendas.FieldByName('TIPO_PLANO').ASSTRING = 'F' then
+          begin
+
+                datac := dm.q_historico_vendas.FieldByName('EMISSAO').asdatetime;
+
+                       while i <= 3 do
+                       begin
+                       datac := datac + 1;
+                       diaf := copy(datetostr(datac),1,2);
+
+                            if copy(mes_anterior,4,2) = copy(datetostr(datac),4,2) then
+                            begin
+                                  if (copy(vetor_dia_mes_anterior[strtoint(diaf)],3,1) <> '-') and
+                                     (copy(vetor_dia_mes_anterior[strtoint(diaf)],3,1) <> '+') then
+                                  begin
+                                        i := i + 1;
+                                  end;
+                            end
+                            else
+                            begin
+                                  if (copy(vetor_dia[strtoint(diaf)],3,1) <> '-') and (copy(vetor_dia[strtoint(diaf)],3,1) <> '+') then
+                                  begin
+                                        i := i + 1;
+                                  end;
+
+                            end;
+
+                       end;
+
+                if (copy(datetostr(datac),4,2) = mes_ano) then
+                begin
+                            diaf := copy(datetostr(datac),1,2);
+                            previsao_saida_dia[strtoint(diaf),3] := previsao_saida_dia[strtoint(diaf),3] + dm.q_historico_vendas.FieldByName('VALOR').AsFloat;
+                end;
+
+
+          end;
+
+         // Vendas que forem C -------------------------------------------------
+
+          if dm.q_historico_vendas.FieldByName('TIPO_PLANO').ASSTRING = 'C' then
+          begin
+                datac := dm.q_historico_vendas.FieldByName('EMISSAO').asdatetime + 20;
+
+                repeat
+                if copy(datetostr(datac),4,2) = mes_ano then
+                begin
+                diac := copy(datetostr(datac),1,2);
+                      if (copy(vetor_dia[strtoint(diac)],3,1) <> '-') and (copy(vetor_dia[strtoint(diac)],3,1) <> '+') then
+                      begin
+                            previsao_saida_dia[strtoint(diac),3] := previsao_saida_dia[strtoint(diac),3] + dm.q_historico_vendas.FieldByName('VALOR').AsFloat;
+                            i := 2;
+                      end
+                      else
+                      begin
+                           datac := datac + 1;
+                           i := 1;
+                      end;
+                end
+                else
+                i := 2;
+                until i = 2 ;
+          end;
+
+          dm.q_historico_vendas.Next;
+    end;  }
+
+end;
+
+procedure previsao.pagamento_fornecedor_diversos;
+var
+v_pecas : extended;
+begin
+
+      dm.q_saida_fornecedor_diversos.Close;
+      dm.q_saida_fornecedor_diversos.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_fornecedor_diversos.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_fornecedor_diversos.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_fornecedor_diversos.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_fornecedor_diversos.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_fornecedor_diversos.Open;
+
+      dm.q_saida_fornecedor_diversos.first;
+
+      while dm.q_saida_fornecedor_diversos.Eof = false do
+      begin
+                  dia := copy(datetostr(dm.q_saida_fornecedor_diversos.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),15] := previsao_saida_dia[strtoint(dia),15] + dm.q_saida_fornecedor_diversos.FieldByName('VALOR').asfloat;
+
+           dm.q_saida_fornecedor_diversos.Next;
+      end;
+
+       {dm.q_historico_saidas.Close;
+       dm.q_historico_saidas.Parameters.ParamByName('data1').Value := mes_anterior3;
+       dm.q_historico_saidas.Parameters.ParamByName('data2').Value := mes_anterior1;
+       dm.q_historico_saidas.open;
+
+       i := 1;
+
+       v_pecas := (dm.q_historico_saidas.FieldByName('VALOR').AsFloat / 3) / dias_uteis2;
+
+       while i <= 31 do
+       begin
+               if (copy(vetor_dia[i],3,1) <> '-') and (copy(vetor_dia[i],3,1) <> '+') then
+               previsao_saida_dia[i,6] := v_pecas;
+               i := i + 1;
+
+       end;  }
+
+end;
+
+
+procedure previsao.pagamento_semi_novos;
+var
+media_dia : extended;
+i : integer;
+begin
+
+      dm.q_realizado_media_saida_semi_novos.Close;
+      dm.q_realizado_media_saida_semi_novos.Parameters.ParamByName('data1').Value := mes_anterior3;
+      dm.q_realizado_media_saida_semi_novos.Parameters.ParamByName('data2').Value := mes_anterior1;
+      dm.q_realizado_media_saida_semi_novos.Parameters.ParamByName('cod_status1').Value := 1;
+      dm.q_realizado_media_saida_semi_novos.Parameters.ParamByName('cod_status2').Value := 1;
+      dm.q_realizado_media_saida_semi_novos.Parameters.ParamByName('cod_status3').Value := 1;
+      dm.q_realizado_media_saida_semi_novos.Open;
+
+      media_dia :=  (dm.q_realizado_media_saida_semi_novos.FieldByName('VALOR').AsExtended / 3) / dias_uteis;
+
+      dm.q_saida_semi_novos.Close;
+      dm.q_saida_semi_novos.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_semi_novos.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_semi_novos.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_semi_novos.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_semi_novos.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_semi_novos.Open;
+
+      dm.q_saida_semi_novos.first;
+
+      while dm.q_saida_semi_novos.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_saida_semi_novos.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),5] := previsao_saida_dia[strtoint(dia),5] + dm.q_saida_semi_novos.FieldByName('VALOR').asfloat;
+
+
+           dm.q_saida_semi_novos.Next;
+      end;
+
+      i := 1;
+
+      while i <= 31 do
+      begin
+           if copy(vetor_dia[i], 3, 1) <> '-' then
+           begin
+                 if previsao_saida_dia[i,5] < media_dia  then
+                 previsao_saida_dia[i,5] := media_dia;
+           end;
+           i := i + 1 ;
+      end;
+
+
+end;
+
+procedure previsao.pagamento_venda_direta;
+begin
+
+
+      dm.q_saida_venda_direta.Close;
+      dm.q_saida_venda_direta.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_venda_direta.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_venda_direta.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_venda_direta.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_venda_direta.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_venda_direta.Open;
+
+      dm.q_saida_venda_direta.first;
+
+      while dm.q_saida_venda_direta.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_saida_venda_direta.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),4] := previsao_saida_dia[strtoint(dia),4] + dm.q_saida_venda_direta.FieldByName('VALOR').asfloat;
+
+
+           dm.q_saida_venda_direta.Next;
+      end;
+
+
+
+end;
+
+procedure previsao.pagamento_consorcio;
+begin
+
+      dm.q_saida_consorcio.Close;
+      dm.q_saida_consorcio.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_consorcio.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_consorcio.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_consorcio.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_consorcio.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_consorcio.Open;
+
+      dm.q_saida_consorcio.first;
+
+      while dm.q_saida_consorcio.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_saida_consorcio.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),4] := previsao_saida_dia[strtoint(dia),4] + dm.q_saida_consorcio.FieldByName('VALOR').asfloat;
+
+
+           dm.q_saida_consorcio.Next;
+      end;
+end;
+
+procedure previsao.pagamento_luz;
+var
+media_dia : extended;
+i : integer;
+begin
+
+      if strtodate(formatdatetime('01/MM/YYYY', strtodate(data_pesquisa))) <
+      strtodate(formatdatetime('01/MM/YYYY', now))
+      then
+
+      dm.q_historico_saida_luz.Close;
+      dm.q_historico_saida_luz.Parameters.ParamByName('data1').Value := mes_anterior4;
+      dm.q_historico_saida_luz.Parameters.ParamByName('data2').Value := mes_anterior1;
+      dm.q_historico_saida_luz.Parameters.ParamByName('cod_status1').Value := 1;
+      dm.q_historico_saida_luz.Parameters.ParamByName('cod_status2').Value := 1;
+      dm.q_historico_saida_luz.Parameters.ParamByName('cod_status3').Value := 1;
+      dm.q_historico_saida_luz.Open;
+
+      dm.q_historico_saida_luz.first;
+
+      while dm.q_historico_saida_luz.Eof = false do
+      begin
+            dm.q_saida_luz.Close;
+            dm.q_saida_luz.Parameters.ParamByName('data1').Value := mes_inicio;
+            dm.q_saida_luz.Parameters.ParamByName('data2').Value := mes_fim;
+            dm.q_saida_luz.Parameters.ParamByName('cod_cliente').Value := dm.q_historico_saida_luz.FieldByName('COD_CLIENTE').AsString;
+            dm.q_saida_luz.Parameters.ParamByName('cod_status1').Value := 0;
+            dm.q_saida_luz.Parameters.ParamByName('cod_status2').Value := 0;
+            dm.q_saida_luz.Parameters.ParamByName('cod_status3').Value := 0;
+            dm.q_saida_luz.Open;
+
+
+
+            if dm.q_saida_luz.FieldByName('COD_CLIENTE').AsString <> '' then
+            begin
+                  dia := copy(datetostr(dm.q_saida_luz.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),12] := previsao_saida_dia[strtoint(dia),12] + dm.q_saida_luz.FieldByName('VALOR').asfloat;
+                  showmessage(floattostr(previsao_saida_dia[strtoint(dia),12]));
+            end
+            else
+            begin
+                 dia := copy(datetostr(dm.q_historico_saida_luz.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                 previsao_saida_dia[strtoint(dia),12] := previsao_saida_dia[strtoint(dia),12] + dm.q_historico_saida_luz.FieldByName('VALOR').asfloat;
+            end;
+
+            dm.q_historico_saida_luz.Next;
+
+      end;
+
+end;
+
+procedure previsao.pagamento_diversos;
+var
+media_dia : extended;
+i : integer;
+begin
+
+      dm.q_saida_diversos.Close;
+      dm.q_saida_diversos.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_diversos.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_diversos.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_diversos.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_diversos.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_diversos.Open;
+
+      dm.q_saida_diversos.first;
+
+      while dm.q_saida_diversos.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_saida_diversos.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),17] := previsao_saida_dia[strtoint(dia),17] + dm.q_saida_diversos.FieldByName('VALOR').asfloat;
+
+
+           dm.q_saida_diversos.Next;
+      end;
+
+
+end;
+
+procedure previsao.pagamento_aluguel;
+begin
+
+
+       dm.q_historico_saida_aluguel.Close;
+       dm.q_historico_saida_aluguel.Parameters.ParamByName('data1').Value := mes_anterior4;
+       dm.q_historico_saida_aluguel.Parameters.ParamByName('data2').Value := mes_anterior1;
+       dm.q_historico_saida_aluguel.Parameters.ParamByName('cod_status1').Value := 1;
+       dm.q_historico_saida_aluguel.Parameters.ParamByName('cod_status2').Value := 1;
+       dm.q_historico_saida_aluguel.Parameters.ParamByName('cod_status3').Value := 1;
+       dm.q_historico_saida_aluguel.Open;
+
+       dm.q_historico_saida_aluguel.First;
+
+       while dm.q_historico_saida_aluguel.Eof = false do
+       begin
+
+            dm.q_saida_aluguel.Close;
+            dm.q_saida_aluguel.Parameters.ParamByName('data1').Value := mes_inicio;
+            dm.q_saida_aluguel.Parameters.ParamByName('data2').Value := mes_fim;
+            dm.q_saida_aluguel.Parameters.ParamByName('cod_cliente').Value := dm.q_historico_saida_aluguel.FieldByName('COD_CLIENTE').AsString;
+            dm.q_saida_aluguel.Parameters.ParamByName('cod_status1').Value := 0;
+            dm.q_saida_aluguel.Parameters.ParamByName('cod_status2').Value := 0;
+            dm.q_saida_aluguel.Parameters.ParamByName('cod_status3').Value := 0;
+            dm.q_saida_aluguel.Open;
+
+            if dm.q_saida_aluguel.FieldByName('COD_CLIENTE').AsString <> '' then
+            begin
+                   dia := copy(datetostr(dm.q_saida_aluguel.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                   previsao_saida_dia[strtoint(dia),10] := previsao_saida_dia[strtoint(dia),10] + dm.q_saida_aluguel.FieldByName('VALOR').asfloat;
+            end
+            else
+            begin
+                   dia := copy(datetostr(dm.q_historico_saida_aluguel.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                   previsao_saida_dia[strtoint(dia),10] := previsao_saida_dia[strtoint(dia),10] + dm.q_historico_saida_aluguel.FieldByName('VALOR').asfloat;
+
+            end;
+
+            dm.q_historico_saida_aluguel.Next;
+       end;
+
+end;
+
+procedure previsao.pagamento_impostos;
+begin
+
+      dm.q_saida_impostos.Close;
+      dm.q_saida_impostos.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_impostos.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_impostos.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_impostos.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_impostos.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_impostos.Open;
+
+      dm.q_saida_impostos.first;
+
+      while dm.q_saida_impostos.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_saida_impostos.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),11] := previsao_saida_dia[strtoint(dia),11] + dm.q_saida_impostos.FieldByName('VALOR').asfloat;
+
+
+           dm.q_saida_impostos.Next;
+      end;
+
+end;
+
+procedure previsao.pagamento_transferencias;
+var
+media_dia : extended;
+i : integer;
+begin
+
+      dm.q_saida_transferencias.close;
+      dm.q_saida_transferencias.Parameters.ParamByName('data1').Value := mes_anterior3;
+      dm.q_saida_transferencias.Parameters.ParamByName('data2').Value := mes_anterior1;
+      dm.q_saida_transferencias.Open;
+
+
+      media_dia := (dm.q_saida_transferencias.FieldByName('VALOR').AsFloat / 3) / dias_uteis;
+
+       i := 1;
+
+      while i <= 31 do
+      begin
+           if copy(vetor_dia[i], 3, 1) <> '-' then
+           begin
+                 previsao_saida_dia[i,18] := media_dia;
+           end;
+           i := i + 1 ;
+      end;
+
+end;
+
+procedure previsao.pagamento_emprestimos;
+begin
+
+      dm.q_saida_emprestimos.Close;
+      dm.q_saida_emprestimos.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_emprestimos.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_emprestimos.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_emprestimos.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_emprestimos.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_emprestimos.Open;
+
+      dm.q_saida_emprestimos.first;
+
+      while dm.q_saida_emprestimos.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_saida_emprestimos.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),19] := previsao_saida_dia[strtoint(dia),19] + dm.q_saida_emprestimos.FieldByName('VALOR').asfloat;
+
+
+           dm.q_saida_emprestimos.Next;
+      end;
+
+
+end;
+
+procedure previsao.pagamento_pecas;
+begin
+      dm.q_saida_pecas.Close;
+      dm.q_saida_pecas.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_pecas.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_pecas.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_pecas.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_pecas.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_pecas.Open;
+
+      dm.q_saida_pecas.first;
+
+      while dm.q_saida_pecas.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_saida_pecas.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),6] := previsao_saida_dia[strtoint(dia),6] + dm.q_saida_pecas.FieldByName('VALOR').asfloat;
+
+
+           dm.q_saida_pecas.Next;
+      end;
+
+
+end;
+
+procedure previsao.pagamento_salarios;
+begin
+       dm.q_historico_saida_salarios.Close;
+       dm.q_historico_saida_salarios.Parameters.ParamByName('data1').Value := mes_anterior4;
+       dm.q_historico_saida_salarios.Parameters.ParamByName('data2').Value := mes_anterior1;
+       dm.q_historico_saida_salarios.Parameters.ParamByName('cod_status1').Value := 1;
+       dm.q_historico_saida_salarios.Parameters.ParamByName('cod_status2').Value := 1;
+       dm.q_historico_saida_salarios.Parameters.ParamByName('cod_status3').Value := 1;
+       dm.q_historico_saida_salarios.Open;
+
+       dm.q_historico_saida_salarios.First;
+
+       while dm.q_historico_saida_salarios.Eof = false do
+       begin
+
+            dm.q_saida_salarios.Close;
+            dm.q_saida_salarios.Parameters.ParamByName('data1').Value := mes_inicio;
+            dm.q_saida_salarios.Parameters.ParamByName('data2').Value := mes_fim;
+            dm.q_saida_salarios.Parameters.ParamByName('cod_cliente').Value := dm.q_historico_saida_salarios.FieldByName('COD_CLIENTE').AsString;
+            dm.q_saida_salarios.Parameters.ParamByName('cod_status1').Value := 0;
+            dm.q_saida_salarios.Parameters.ParamByName('cod_status2').Value := 0;
+            dm.q_saida_salarios.Parameters.ParamByName('cod_status3').Value := 0;
+            dm.q_saida_salarios.Open;
+
+            if dm.q_saida_salarios.FieldByName('COD_CLIENTE').AsString <> '' then
+            begin
+                   dia := copy(datetostr(dm.q_saida_aluguel.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                   previsao_saida_dia[strtoint(dia),8] := previsao_saida_dia[strtoint(dia),8] + dm.q_saida_salarios.FieldByName('VALOR').asfloat;
+            end
+            else
+            begin
+                   dia := copy(datetostr(dm.q_historico_saida_aluguel.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                   previsao_saida_dia[strtoint(dia),8] := previsao_saida_dia[strtoint(dia),8] + dm.q_historico_saida_salarios.FieldByName('VALOR').asfloat;
+
+            end;
+
+            dm.q_historico_saida_salarios.Next;
+       end;
+
+
+end;
+
+procedure previsao.pagamento_rescisao;
+begin
+      dm.q_saida_rescisao.Close;
+      dm.q_saida_rescisao.Parameters.ParamByName('data1').Value := mes_inicio;
+      dm.q_saida_rescisao.Parameters.ParamByName('data2').Value := mes_fim;
+      dm.q_saida_rescisao.Parameters.ParamByName('cod_status1').Value := 0;
+      dm.q_saida_rescisao.Parameters.ParamByName('cod_status2').Value := 0;
+      dm.q_saida_rescisao.Parameters.ParamByName('cod_status3').Value := 0;
+      dm.q_saida_rescisao.Open;
+
+      dm.q_saida_rescisao.first;
+
+      while dm.q_saida_rescisao.Eof = false do
+      begin
+
+                  dia := copy(datetostr(dm.q_saida_rescisao.FieldByName('DATA_VENCIMENTO').Asdatetime),1,2);
+                  previsao_saida_dia[strtoint(dia),9] := previsao_saida_dia[strtoint(dia),9] + dm.q_saida_rescisao.FieldByName('VALOR').asfloat;
+
+
+           dm.q_saida_rescisao.Next;
+      end;
+
+end;
+
+
+procedure previsao.total;
+var
+i,j : integer;
+begin
+      i := 1;
+      j := 1;
+
+      while j <= 21 do
+      begin
+            i := 1;
+            while i <= 31 do
+            begin
+                  previsao_saida_dia_total[i] := previsao_saida_dia_total[i] + previsao_saida_dia[i,j];
+                  i := i + 1;
+            end;
+            j := j + 1;
+      end;
+end;
+
+
+end.
+

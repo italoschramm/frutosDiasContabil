@@ -1,0 +1,234 @@
+unit UDias;
+
+interface
+
+uses  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, Buttons, Menus, Mask, Grids, DBGrids, Registry,
+  DB, ADODB, Math, DateUtils;
+
+type
+    dias = class
+    public
+    mes_ano : string;
+    mes_anterior1, mes_anterior2, mes_anterior3, mes_inicio, mes_fim, mes_anterior, data_pesquisa2 : string;
+    mes : Textfile;
+    vetor_dia : array[1..31] of string;
+    vetor_dia_mes_anterior : array[1..31] of string;
+    dias_uteis, dias_uteis2 : integer;
+    data_pesquisa : string;
+    constructor criar;
+    destructor destruir;
+    procedure inserir_dias;
+    procedure identificar_mes;
+    procedure arquivo;
+    procedure arquivo_anterior;
+    end;
+
+implementation
+
+uses previsao_fluxo;
+
+constructor  dias.criar;
+begin
+
+end;
+
+destructor dias.destruir;
+begin
+
+end;
+
+procedure dias.inserir_dias;
+var
+i : integer;
+
+begin
+
+      identificar_mes;
+
+      arquivo;
+
+      arquivo_anterior;
+
+      i := 1;
+      dias_uteis := 0;
+
+      while i <= 31 do
+      begin
+          if copy(vetor_dia[i],3,1) <> '-' then
+          begin
+               dias_uteis := dias_uteis + 1;
+               i := i + 1;
+          end
+          else
+          begin
+               i := i + 1;
+          end;
+      end;
+
+      i := 1;
+      dias_uteis2 := 0;
+
+      while i <= 31 do
+      begin
+          if (copy(vetor_dia[i],3,1) <> '-') and (copy(vetor_dia[i],3,1) <> '+') then
+          begin
+               dias_uteis2 := dias_uteis2 + 1;
+               i := i + 1;
+          end
+          else
+          begin
+               i := i + 1;
+          end;
+      end;
+
+
+end;
+
+procedure dias.identificar_mes;
+
+begin
+      mes_ano := copy(data_pesquisa, 4, 2);
+      data_pesquisa2 := formatdatetime('DD/MM/YYYY', now);
+
+
+      if copy(data_pesquisa, 4, 7) = copy(data_pesquisa2, 4, 7) then
+      begin
+
+            mes_anterior3 := formatdatetime('01/MM/YYYY', IncMonth(strtodate(data_pesquisa2), -3));
+            mes_anterior2 := formatdatetime('01/MM/YYYY', IncMonth(strtodate(data_pesquisa2), -2));
+            mes_anterior1 := formatdatetime('DD/MM/YYYY', EndOfTheMonth(IncMonth(strtodate(data_pesquisa2), -1)));
+            mes_anterior :=  formatdatetime('01/MM/YYYY', IncMonth(strtodate(data_pesquisa), -1));
+
+      end
+      else
+      begin
+
+            mes_anterior3 := formatdatetime('01/MM/YYYY', (IncMonth(now , -3)));
+            mes_anterior2 := formatdatetime('01/MM/YYYY', (IncMonth(now, -2)));
+            mes_anterior1 := formatdatetime('DD/MM/YYYY', (EndOfTheMonth(IncMonth(now, -1))));
+            mes_anterior :=  formatdatetime('01/MM/YYYY', (IncMonth(now, -1)));
+
+      end;
+      mes_inicio :=  formatdatetime('01/MM/YYYY', strtodate(data_pesquisa));
+      mes_fim := formatdatetime('DD/MM/YYYY', EndOfTheMonth(strtodate(data_pesquisa)));
+
+end;
+
+procedure dias.arquivo;
+var
+dia : string;
+i : integer;
+
+begin
+
+      if mes_ano = '01' then
+      AssignFile(mes,'Financeiro\01.txt');
+
+      if mes_ano = '02' then
+      AssignFile(mes,'Financeiro\02.txt');
+
+      if mes_ano = '03' then
+      AssignFile(mes,'Financeiro\03.txt');
+
+      if mes_ano = '04' then
+      AssignFile(mes,'Financeiro\04.txt');
+
+      if mes_ano = '05' then
+      AssignFile(mes,'Financeiro\05.txt');
+
+      if mes_ano = '06' then
+      AssignFile(mes,'Financeiro\06.txt');
+
+      if mes_ano = '07' then
+      AssignFile(mes,'Financeiro\07.txt');
+
+      if mes_ano = '08' then
+      AssignFile(mes,'Financeiro\08.txt');
+
+      if mes_ano = '09' then
+      AssignFile(mes,'Financeiro\09.txt');
+
+      if mes_ano = '10' then
+      AssignFile(mes,'Financeiro\10.txt');
+
+      if mes_ano = '11' then
+      AssignFile(mes,'Financeiro\11.txt');
+
+      if mes_ano = '12' then
+      AssignFile(mes,'Financeiro\12.txt');
+
+      Reset(mes);
+
+      i := 1;
+      while i <= 31 do
+      begin
+            readln(mes, dia);
+            vetor_dia[i] := dia;
+            i := i + 1;
+      end;
+
+      closefile(mes);
+
+end;
+
+
+procedure dias.arquivo_anterior;
+var
+dia : string;
+i : integer;
+
+begin
+
+      if mes_ano = '01' then
+      AssignFile(mes,'Financeiro\12.txt');
+
+      if mes_ano = '02' then
+      AssignFile(mes,'Financeiro\01.txt');
+
+      if mes_ano = '03' then
+      AssignFile(mes,'Financeiro\02.txt');
+
+      if mes_ano = '04' then
+      AssignFile(mes,'Financeiro\03.txt');
+
+      if mes_ano = '05' then
+      AssignFile(mes,'Financeiro\04.txt');
+
+      if mes_ano = '06' then
+      AssignFile(mes,'Financeiro\05.txt');
+
+      if mes_ano = '07' then
+      AssignFile(mes,'Financeiro\06.txt');
+
+      if mes_ano = '08' then
+      AssignFile(mes,'Financeiro\07.txt');
+
+      if mes_ano = '09' then
+      AssignFile(mes,'Financeiro\08.txt');
+
+      if mes_ano = '10' then
+      AssignFile(mes,'Financeiro\09.txt');
+
+      if mes_ano = '11' then
+      AssignFile(mes,'Financeiro\10.txt');
+
+      if mes_ano = '12' then
+      AssignFile(mes,'Financeiro\11.txt');
+
+      Reset(mes);
+
+      i := 1;
+      while i <= 31 do
+      begin
+            readln(mes, dia);
+            vetor_dia_mes_anterior[i] := dia;
+            i := i + 1;
+      end;
+
+      closefile(mes);
+
+end;
+
+end.
+
