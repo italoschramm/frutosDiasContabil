@@ -2975,8 +2975,9 @@ object dm_facts: Tdm_facts
         'ITENS)) AS VALOR, '
       ''
       
-        #39'V1'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= :data1 AND DATA_ENC' +
-        'ERRADA <= :data2 AND (TIPO = '#39'V1'#39')'
+        #39'V1'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= TO_DATE(:data1, '#39'DD' +
+        '/MM/YYYY'#39') AND DATA_ENCERRADA <= TO_DATE(:data2, '#39'DD/MM/YYYY'#39') A' +
+        'ND (TIPO = '#39'V1'#39')'
       ''
       'AND STATUS_OS = 1 '
       ''
@@ -2992,8 +2993,9 @@ object dm_facts: Tdm_facts
         'ITENS)) AS VALOR, '
       ''
       
-        #39'V2'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= :data3 AND DATA_ENC' +
-        'ERRADA <= :data4 AND (TIPO = '#39'V2'#39')'
+        #39'V2'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= TO_DATE(:data3, '#39'DD' +
+        '/MM/YYYY'#39') AND DATA_ENCERRADA <= TO_DATE(:data4, '#39'DD/MM/YYYY'#39') A' +
+        'ND (TIPO = '#39'V2'#39')'
       ''
       'AND STATUS_OS = 1'
       ''
@@ -3009,8 +3011,9 @@ object dm_facts: Tdm_facts
         'ITENS)) AS VALOR,'
       ''
       
-        #39'V3'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= :data5 AND DATA_ENC' +
-        'ERRADA <= :data6 AND (TIPO = '#39'V3'#39')'
+        #39'V3'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= TO_DATE(:data5, '#39'DD' +
+        '/MM/YYYY'#39') AND DATA_ENCERRADA <= TO_DATE(:data6, '#39'DD/MM/YYYY'#39') A' +
+        'ND (TIPO = '#39'V3'#39')'
       ''
       'AND STATUS_OS = 1'
       ''
@@ -3026,8 +3029,9 @@ object dm_facts: Tdm_facts
         'ITENS)) AS VALOR,'
       ''
       
-        #39'V4'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= :data7 AND DATA_ENC' +
-        'ERRADA <= :data8 AND (TIPO = '#39'V4'#39')'
+        #39'V4'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= TO_DATE(:data7, '#39'DD' +
+        '/MM/YYYY'#39') AND DATA_ENCERRADA <= TO_DATE(:data8, '#39'DD/MM/YYYY'#39') A' +
+        'ND (TIPO = '#39'V4'#39')'
       ''
       'AND STATUS_OS = 1'
       ''
@@ -3043,9 +3047,10 @@ object dm_facts: Tdm_facts
         'ITENS)) AS VALOR,  '
       ''
       
-        #39'DS'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= :data9 AND DATA_ENC' +
-        'ERRADA <= :data10 AND (TIPO = '#39'DF'#39' OR TIPO = '#39'DR'#39' OR TIPO = '#39'DT'#39 +
-        ' OR TIPO = '#39'D1'#39' OR '
+        #39'DS'#39' AS TIPO FROM OS WHERE DATA_ENCERRADA >= TO_DATE(:data9, '#39'DD' +
+        '/MM/YYYY'#39') AND DATA_ENCERRADA <= TO_DATE(:data10, '#39'DD/MM/YYYY'#39') ' +
+        'AND (TIPO = '#39'DF'#39' OR TIPO = '#39'DR'#39' OR TIPO = '#39'DT'#39' OR TIPO = '#39'D1'#39' OR' +
+        ' '
       ''
       
         'TIPO = '#39'D2'#39' OR TIPO = '#39'D3'#39' OR TIPO = '#39'D4'#39' OR TIPO = '#39'D5'#39' OR TIPO' +
@@ -3100,8 +3105,10 @@ object dm_facts: Tdm_facts
     Connection = dm.conexao_oracle
     SQL.Strings = (
       'SELECT * FROM (SELECT COUNT(*) AS QUANTIDADE '
-      'FROM VEICULOS WHERE DATA_VENDA >= :data1'
-      'AND DATA_VENDA <= :data2 AND NOVO_USADO = '#39'U'#39')')
+      'FROM VEICULOS WHERE DATA_VENDA >= TO_DATE(:data1, '#39'DD/MM/YYYY'#39')'
+      
+        'AND DATA_VENDA <= TO_DATE(:data2, '#39'DD/MM/YYYY'#39') AND NOVO_USADO =' +
+        ' '#39'U'#39')')
     Left = 40
     Top = 472
     ParamData = <
@@ -3121,8 +3128,9 @@ object dm_facts: Tdm_facts
         'SELECT * FROM (SELECT COD_PRODUTO, COUNT(*) AS QUANTIDADE FROM V' +
         'EICULOS '
       
-        'WHERE DATA_VENDA >= :data1 AND DATA_VENDA <= :data2 AND NOVO_USA' +
-        'DO = '#39'N'#39' GROUP BY (COD_PRODUTO))')
+        'WHERE DATA_VENDA >= TO_DATE(:data1, '#39'DD/MM/YYYY'#39') AND DATA_VENDA' +
+        ' <= TO_DATE(:data2, '#39'DD/MM/YYYY'#39') AND NOVO_USADO = '#39'N'#39' GROUP BY ' +
+        '(COD_PRODUTO))')
     Left = 145
     Top = 520
     ParamData = <

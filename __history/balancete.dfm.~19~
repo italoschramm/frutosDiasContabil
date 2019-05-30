@@ -1,0 +1,768 @@
+object f_balancete: Tf_balancete
+  Left = 0
+  Top = 0
+  Caption = 'f_balancete'
+  ClientHeight = 602
+  ClientWidth = 1004
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  Visible = True
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 1004
+    Height = 97
+    Align = alTop
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 24
+      Top = 18
+      Width = 72
+      Height = 16
+      Caption = 'Data Inicial'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label2: TLabel
+      Left = 40
+      Top = 104
+      Width = 72
+      Height = 16
+      Caption = 'Data Inicial'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label3: TLabel
+      Left = 24
+      Top = 59
+      Width = 63
+      Height = 16
+      Caption = 'Data Final'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object date1: TDateTimePicker
+      Left = 129
+      Top = 13
+      Width = 112
+      Height = 21
+      Date = 42228.375562465270000000
+      Time = 42228.375562465270000000
+      TabOrder = 0
+    end
+    object Date2: TDateTimePicker
+      Left = 129
+      Top = 54
+      Width = 112
+      Height = 21
+      Date = 42228.375562465270000000
+      Time = 42228.375562465270000000
+      TabOrder = 1
+    end
+    object btgerar: TButton
+      Left = 288
+      Top = 37
+      Width = 75
+      Height = 25
+      Caption = 'Gerar'
+      TabOrder = 2
+      OnClick = btgerarClick
+    end
+    object btexcel: TButton
+      Left = 639
+      Top = 37
+      Width = 75
+      Height = 25
+      Caption = 'Excel'
+      TabOrder = 3
+      OnClick = btexcelClick
+    end
+    object btcalcular: TButton
+      Left = 550
+      Top = 37
+      Width = 75
+      Height = 25
+      Caption = 'Calcular'
+      TabOrder = 4
+      OnClick = btcalcularClick
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Top = 97
+    Width = 1004
+    Height = 505
+    Align = alClient
+    DataSource = DataSource1
+    TabOrder = 1
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'DESPESA'
+        Title.Alignment = taCenter
+        Width = 200
+        Visible = True
+      end
+      item
+        Color = clGradientInactiveCaption
+        Expanded = False
+        FieldName = 'NOVO'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clMoneyGreen
+        Expanded = False
+        FieldName = 'NOVO1'
+        Title.Alignment = taCenter
+        Title.Caption = 'NOVO'
+        Width = 90
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'NOVO_TOTAL'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'NOVO'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clGradientInactiveCaption
+        Expanded = False
+        FieldName = 'VENDAS_DIRETA'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'VENDAS DIRETA'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clMoneyGreen
+        Expanded = False
+        FieldName = 'VENDAS_DIRETA1'
+        Title.Alignment = taCenter
+        Title.Caption = 'VENDAS DIRETA'
+        Width = 90
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'VENDAS_DIRETA_TOTAL'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'VENDAS DIRETA'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clGradientInactiveCaption
+        Expanded = False
+        FieldName = 'CONSORCIO'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'CONS'#211'RCIO'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clMoneyGreen
+        Expanded = False
+        FieldName = 'CONSORCIO1'
+        Title.Alignment = taCenter
+        Title.Caption = 'CONS'#211'RCIO'
+        Width = 90
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'CONSORCIO_TOTAL'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'CONS'#211'RCIO'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clGradientInactiveCaption
+        Expanded = False
+        FieldName = 'USADOS'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clMoneyGreen
+        Expanded = False
+        FieldName = 'USADOS1'
+        Title.Alignment = taCenter
+        Title.Caption = 'USADOS'
+        Width = 90
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'USADOS_TOTAL'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'USADOS'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clGradientInactiveCaption
+        Expanded = False
+        FieldName = 'PECAS'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'PE'#199'AS'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clMoneyGreen
+        Expanded = False
+        FieldName = 'PECAS1'
+        Title.Alignment = taCenter
+        Title.Caption = 'PE'#199'AS'
+        Width = 90
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'PECAS_TOTAL'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'PE'#199'AS'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clGradientInactiveCaption
+        Expanded = False
+        FieldName = 'MECANICA'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'MEC'#194'NICA'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clMoneyGreen
+        Expanded = False
+        FieldName = 'MECANICA1'
+        Title.Alignment = taCenter
+        Title.Caption = 'MEC'#194'NICA'
+        Width = 90
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'MECANICA_TOTAL'
+        ReadOnly = True
+        Title.Caption = 'MEC'#194'NICA'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clGradientInactiveCaption
+        Expanded = False
+        FieldName = 'FUNILARIA'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clMoneyGreen
+        Expanded = False
+        FieldName = 'FUNILARIA1'
+        Title.Alignment = taCenter
+        Title.Caption = 'FUNILARIA'
+        Width = 90
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'FUNILARIA_TOTAL'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'FUNILARIA'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clGradientInactiveCaption
+        Expanded = False
+        FieldName = 'POSTO_LAVAGEM'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'POSTO LAVAGEM'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clMoneyGreen
+        Expanded = False
+        FieldName = 'POSTO_LAVAGEM1'
+        Title.Alignment = taCenter
+        Title.Caption = 'POSTO LAVAGEM'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'POSTO_LAVAGEM_TOTAL'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'POSTO LAVAGEM'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clGradientInactiveCaption
+        Expanded = False
+        FieldName = 'ADMINISTRACAO'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'ADMINISTRA'#199#195'O'
+        Width = 90
+        Visible = True
+      end
+      item
+        Color = clMoneyGreen
+        Expanded = False
+        FieldName = 'ADMINISTRACAO1'
+        Title.Alignment = taCenter
+        Title.Caption = 'ADMINISTRA'#199#195'O'
+        Width = 90
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'ADMINISTRACAO_TOTAL'
+        ReadOnly = True
+        Title.Alignment = taCenter
+        Title.Caption = 'ADMINISTRA'#199#195'O'
+        Width = 90
+        Visible = True
+      end>
+  end
+  object DataSource1: TDataSource
+    DataSet = dataset1
+    Left = 64
+    Top = 200
+  end
+  object q_consulta: TADOQuery
+    AutoCalcFields = False
+    CursorType = ctStatic
+    Parameters = <
+      item
+        Name = 'data1'
+        Attributes = [paNullable]
+        DataType = ftString
+        Precision = 231
+        Size = 999
+        Value = Null
+      end
+      item
+        Name = 'data2'
+        Attributes = [paNullable]
+        DataType = ftString
+        Precision = 231
+        Size = 999
+        Value = Null
+      end>
+    SQL.Strings = (
+      
+        'SELECT A.CONTA_DEBITO, A.CONTA_CREDITO, A.VALOR, A.CCUSTO_DEBITO' +
+        ', A.CCUSTO_CREDITO, A.DATA FROM LANCAMENTO_CONTABIL A'
+      
+        'WHERE A.DATA >= :data1 and A.DATA <= :data2 AND A.COD_GRUPO_PC =' +
+        ' 25 AND (A.CCUSTO_DEBITO <> 0 OR A.CCUSTO_CREDITO <> 0 )')
+    Left = 64
+    Top = 264
+    object q_consultaCONTA_DEBITO: TStringField
+      FieldName = 'CONTA_DEBITO'
+    end
+    object q_consultaCONTA_CREDITO: TStringField
+      FieldName = 'CONTA_CREDITO'
+    end
+    object q_consultaVALOR: TBCDField
+      FieldName = 'VALOR'
+      Precision = 15
+      Size = 2
+    end
+    object q_consultaCCUSTO_DEBITO: TIntegerField
+      FieldName = 'CCUSTO_DEBITO'
+    end
+    object q_consultaCCUSTO_CREDITO: TIntegerField
+      FieldName = 'CCUSTO_CREDITO'
+    end
+    object q_consultaDATA: TDateTimeField
+      FieldName = 'DATA'
+    end
+  end
+  object dataset: TADODataSet
+    CursorType = ctStatic
+    Filtered = True
+    LockType = ltBatchOptimistic
+    CommandText = 'C:\Frutosdias\dataset.adtg'
+    CommandType = cmdFile
+    Parameters = <>
+    Left = 64
+    Top = 456
+    object datasetCONTA: TStringField
+      FieldName = 'CONTA'
+      Size = 50
+    end
+    object datasetVALOR: TFloatField
+      FieldName = 'VALOR'
+    end
+    object datasetCUSTO: TIntegerField
+      FieldName = 'CUSTO'
+    end
+  end
+  object dataset1: TADODataSet
+    Active = True
+    CursorType = ctStatic
+    LockType = ltBatchOptimistic
+    CommandText = 
+      'D:\Italo\GoogleDrive\Desenvolvimento\Frutos Dias\Lancamentos Con' +
+      'tabil\dataset1.adtg'
+    CommandType = cmdFile
+    FieldDefs = <
+      item
+        Name = 'CONTA'
+        DataType = ftString
+        Size = 80
+      end
+      item
+        Name = 'DESPESA'
+        DataType = ftString
+        Size = 80
+      end
+      item
+        Name = 'NOVO'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'VENDAS_DIRETA'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'CONSORCIO'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'USADOS'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'PECAS'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'MECANICA'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'FUNILARIA'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'POSTO_LAVAGEM'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'ADMINISTRACAO'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'NOVO1'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'VENDAS_DIRETA1'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'CONSORCIO1'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'USADOS1'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'PECAS1'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'MECANICA1'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'FUNILARIA1'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'POSTO_LAVAGEM1'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'ADMINISTRACAO1'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'NOVO_TOTAL'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'VENDAS_DIRETA_TOTAL'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'CONSORCIO_TOTAL'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'USADOS_TOTAL'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'PECAS_TOTAL'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'MECANICA_TOTAL'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'FUNILARIA_TOTAL'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'POSTO_LAVAGEM_TOTAL'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end
+      item
+        Name = 'ADMINISTRACAO_TOTAL'
+        Attributes = [faFixed]
+        DataType = ftFloat
+      end>
+    Parameters = <>
+    StoreDefs = True
+    Left = 64
+    Top = 520
+    object dataset1ID: TIntegerField
+      FieldKind = fkCalculated
+      FieldName = 'ID'
+      Calculated = True
+    end
+    object dataset1DESPESA: TStringField
+      FieldName = 'DESPESA'
+      Size = 80
+    end
+    object dataset1NOVO: TFloatField
+      FieldName = 'NOVO'
+      currency = True
+    end
+    object dataset1VENDAS_DIRETA: TFloatField
+      FieldName = 'VENDAS_DIRETA'
+      currency = True
+    end
+    object dataset1CONSORCIO: TFloatField
+      FieldName = 'CONSORCIO'
+      currency = True
+    end
+    object dataset1USADOS: TFloatField
+      FieldName = 'USADOS'
+      currency = True
+    end
+    object dataset1PECAS: TFloatField
+      FieldName = 'PECAS'
+      currency = True
+    end
+    object dataset1MECANICA: TFloatField
+      FieldName = 'MECANICA'
+      currency = True
+    end
+    object dataset1FUNILARIA: TFloatField
+      FieldName = 'FUNILARIA'
+      currency = True
+    end
+    object dataset1POSTO_LAVAGEM: TFloatField
+      FieldName = 'POSTO_LAVAGEM'
+      currency = True
+    end
+    object dataset1ADMINISTRACAO: TFloatField
+      FieldName = 'ADMINISTRACAO'
+      currency = True
+    end
+    object dataset1NOVO1: TFloatField
+      FieldName = 'NOVO1'
+      currency = True
+    end
+    object dataset1VENDAS_DIRETA1: TFloatField
+      FieldName = 'VENDAS_DIRETA1'
+      currency = True
+    end
+    object dataset1CONSORCIO1: TFloatField
+      FieldName = 'CONSORCIO1'
+      currency = True
+    end
+    object dataset1USADOS1: TFloatField
+      FieldName = 'USADOS1'
+      currency = True
+    end
+    object dataset1PECAS1: TFloatField
+      FieldName = 'PECAS1'
+      currency = True
+    end
+    object dataset1MECANICA1: TFloatField
+      FieldName = 'MECANICA1'
+      currency = True
+    end
+    object dataset1FUNILARIA1: TFloatField
+      FieldName = 'FUNILARIA1'
+      currency = True
+    end
+    object dataset1POSTO_LAVAGEM1: TFloatField
+      FieldName = 'POSTO_LAVAGEM1'
+      currency = True
+    end
+    object dataset1ADMINISTRACAO1: TFloatField
+      FieldName = 'ADMINISTRACAO1'
+      currency = True
+    end
+    object dataset1NOVO_TOTAL: TFloatField
+      FieldName = 'NOVO_TOTAL'
+      currency = True
+    end
+    object dataset1VENDAS_DIRETA_TOTAL: TFloatField
+      FieldName = 'VENDAS_DIRETA_TOTAL'
+      currency = True
+    end
+    object dataset1CONSORCIO_TOTAL: TFloatField
+      FieldName = 'CONSORCIO_TOTAL'
+      currency = True
+    end
+    object dataset1USADOS_TOTAL: TFloatField
+      FieldName = 'USADOS_TOTAL'
+      currency = True
+    end
+    object dataset1PECAS_TOTAL: TFloatField
+      FieldName = 'PECAS_TOTAL'
+      currency = True
+    end
+    object dataset1MECANICA_TOTAL: TFloatField
+      FieldName = 'MECANICA_TOTAL'
+      currency = True
+    end
+    object dataset1FUNILARIA_TOTAL: TFloatField
+      FieldName = 'FUNILARIA_TOTAL'
+      currency = True
+    end
+    object dataset1POSTO_LAVAGEM_TOTAL: TFloatField
+      FieldName = 'POSTO_LAVAGEM_TOTAL'
+      currency = True
+    end
+    object dataset1ADMINISTRACAO_TOTAL: TFloatField
+      FieldName = 'ADMINISTRACAO_TOTAL'
+      currency = True
+    end
+  end
+  object q_consulta_data: TADOQuery
+    DataSource = DataSource2
+    Parameters = <>
+    Left = 64
+    Top = 392
+  end
+  object DataSource2: TDataSource
+    DataSet = dataset
+    Left = 64
+    Top = 144
+  end
+  object q_consulta2: TFDQuery
+    Connection = dm.conexao_oracle
+    SQL.Strings = (
+      
+        'SELECT A.CONTA_DEBITO, A.CONTA_CREDITO, A.VALOR, A.CCUSTO_DEBITO' +
+        ', A.CCUSTO_CREDITO, A.DATA, B.COD_FABRICA FROM LANCAMENTO_CONTAB' +
+        'IL A, CONTA_CONTABIL B '
+      
+        'WHERE A.DATA >= TO_DATE(:data1, '#39'DD/MM/YYYY'#39') and A.DATA <= TO_D' +
+        'ATE(:data2, '#39'DD/MM/YYYY'#39') AND A.COD_GRUPO_PC = 25 AND (A.CCUSTO_' +
+        'DEBITO <> 0 OR A.CCUSTO_CREDITO <> 0) AND'
+      
+        '(A.CONTA_DEBITO = B.COD_CONTABIL OR A.CONTA_CREDITO = B.COD_CONT' +
+        'ABIL) AND B.COD_FABRICA <> 0 AND A.COD_GRUPO_PC = B.COD_GRUPO_PC')
+    Left = 168
+    Top = 296
+    ParamData = <
+      item
+        Name = 'DATA1'
+        ParamType = ptInput
+      end
+      item
+        Name = 'DATA2'
+        ParamType = ptInput
+      end>
+  end
+end

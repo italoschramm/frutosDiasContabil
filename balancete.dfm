@@ -433,13 +433,10 @@ object f_balancete: Tf_balancete
     end
   end
   object dataset: TADODataSet
-    Active = True
     CursorType = ctStatic
     Filtered = True
     LockType = ltBatchOptimistic
-    CommandText = 
-      'D:\Italo\GoogleDrive\Desenvolvimento\Frutos Dias\Lancamentos Con' +
-      'tabil\dataset.adtg'
+    CommandText = 'C:\Frutosdias\dataset.adtg'
     CommandType = cmdFile
     Parameters = <>
     Left = 64
@@ -459,9 +456,7 @@ object f_balancete: Tf_balancete
     Active = True
     CursorType = ctStatic
     LockType = ltBatchOptimistic
-    CommandText = 
-      'D:\Italo\GoogleDrive\Desenvolvimento\Frutos Dias\Lancamentos Con' +
-      'tabil\dataset1.adtg'
+    CommandText = 'C:\Frutosdias\dataset1.adtg'
     CommandType = cmdFile
     FieldDefs = <
       item
